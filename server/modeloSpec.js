@@ -1,7 +1,9 @@
+const modelo = require("./modelo.js");
+
 describe("El sistema", function () {
     let sistema;
     beforeEach(function () {
-        sistema = new Sistema();
+        sistema = new modelo.Sistema();
     });
 
     it("Add user.", function () {

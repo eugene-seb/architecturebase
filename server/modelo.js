@@ -2,7 +2,15 @@ function Sistema() {
     this.usuarios = {};
 
     this.agregarUsuario = function (nick) {
-        this.usuarios[nick] = new Usuario(nick);
+
+        let res = { nick: -1 };
+        if (!this.usuarios[nick]) {
+            this.usuarios[nick] = new Usuario(nick);
+            res.nick = nick;
+        } else {
+            console.log("el nick " + nick + " está en uso");
+        }
+        return res;
     };
 
     this.obtenerUsuarios = function () {
@@ -30,9 +38,11 @@ function Sistema() {
     };
 
     this.countUsers = function () {
-        return Object.keys(this.usuarios).length;
-    }
+        let nbr = Object.keys(this.usuarios).length;
+        return {"num" : nbr};
+    };
 }
+module.exports.Sistema = Sistema;
 
 function Usuario(nick) {
     this.nick = nick;

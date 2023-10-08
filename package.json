@@ -1,0 +1,17 @@
+{
+    "name": "architecturebase",
+    "version": "1.0.0",
+    "description": "Course of SOFTWARE ENGINEERING PROCESSES at UCLM",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "testW": "node_modules\\.bin\\jasmine server",
+        "test": "./node_modules/.bin/jasmine server"
+    },
+    "author": "Eugene ETOUNDI II",
+    "license": "ISC",
+    "dependencies": {
+        "express": "^4.18.2",
+        "jasmine": "^5.1.0"
+    }
+}
