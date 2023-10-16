@@ -9,7 +9,7 @@ function ControlWeb() {
     };
 
     this.comprobarSesion = function () {
-        let nick = localStorage.getItem("nick");
+        let nick = $.cookie("nick");
         if (nick) {
             cw.mostrarMensaje("Bienvenido al sistema, " + nick);
         } else {
@@ -18,10 +18,10 @@ function ControlWeb() {
     };
 
     this.salir = function () {
-        let nick = localStorage.getItem("nick");
+        let nick = $.cookie("nick");
         if (nick) {
             cw.mostrarMensaje("Goodbye " + nick);
-            localStorage.removeItem("nick");
+            $.removeCookie("nick");
             location.reload();
         }
     };
