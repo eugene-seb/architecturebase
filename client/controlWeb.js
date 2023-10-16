@@ -1,16 +1,17 @@
 function ControlWeb() {
-    this.mostrarAgregarUsuario = function () {
-        let cadena = '<div id="mAU" class="form-group">';
-        cadena = cadena + '<label for="usr">Name:</label>';
+    this.mostrarAgregarUsuario = function (nick) {
+        let cadena = '<tr><th scope="row">1</th><td>' + nick + '</td><td><button type="button" class="btn btn-danger">Delete</button></td></tr>';
 
         $("#au").append(cadena);
     };
 }
 
 $("#btnAU").on("click", function () {
+    
     $("#mAU").remove();
+
     let nick = $("#nick").val();
     rest.agregarUsuario(nick);
 
-    cw.mostrarAgregarUsuario();
+    cw.mostrarAgregarUsuario(nick);
 });
