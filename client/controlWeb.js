@@ -1,11 +1,31 @@
 function ControlWeb() {
-    this.mostrarAgregarUsuario = function (nick) {
-        let cadena =
-            '<tr><th scope="row">1</th><td>' +
-            nick +
-            '</td><td><button type="button" class="btn btn-danger">Delete</button></td></tr>';
+    this.mostrarAgregarUsuario = function () {
+        $("#mAU").remove();
+        let cadena = '<div id="mAU">';
+        cadena = cadena + '<div class="card"><div class="card-body">';
+        cadena = cadena + '<div class="form-group">';
+        cadena = cadena + '<label for="nick">Nick:</label>';
+        cadena =
+            cadena +
+            '<p><input type="text" class="form-control" id="nick" placeholder="introduce un nick"></p>';
+        cadena =
+            cadena +
+            '<button id="btnAU" type="submit" class="btn btn-primary">Submit</button>';
+        cadena =
+            cadena +
+            '<div><a href="/auth/google"><img src="./client/img/google.png" style="height:40px;"></a></div>';
+        cadena = cadena + "</div>";
+        cadena = cadena + "</div></div></div>";
 
-        $("#au").append(cadena);
+        $("#au").append(cadena); //au = agregar usuario
+
+        $("#btnAU").on("click", function () {
+            let nick = $("#nick").val();
+            if (nick) {
+                $("#mAU").remove();
+                rest.agregarUsuario(nick);
+            }
+        });
     };
 
     this.comprobarSesion = function () {
@@ -17,21 +37,14 @@ function ControlWeb() {
         }
     };
 
+    this.mostrarMensaje = function (msg) {
+        $("#mMsg").remove();
+        let cadena = '<p id="mMsg">' + msg + "</p>";
+        $("#msg").append(cadena);
+    };
+
     this.salir = function () {
-        let nick = $.cookie("nick");
-        if (nick) {
-            cw.mostrarMensaje("Goodbye " + nick);
-            $.removeCookie("nick");
-            location.reload();
-        }
+        $.removeCookie("nick");
+        location.reload();
     };
 }
-
-$("#btnAU").on("click", function () {
-    $("#mAU").remove();
-
-    let nick = $("#nick").val();
-    rest.agregarUsuario(nick);
-
-    cw.mostrarAgregarUsuario(nick);
-});
