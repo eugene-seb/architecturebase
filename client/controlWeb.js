@@ -28,12 +28,35 @@ function ControlWeb() {
         });
     };
 
+    this.init = function () {
+        let cw = this;
+        google.accounts.id.initialize({
+            client_id:
+                "590521076034-qevao0sekmpnfb6if60oobcv74h874pv.apps.googleusercontent.com", //prod
+            auto_select: false,
+            callback: cw.handleCredentialsResponse,
+        });
+        google.accounts.id.prompt();
+    };
+
+    this.handleCredentialsResponse = function (response) {
+        let jwt = response.credential;
+        /*let user = JSON.parse(atob(jwt.split(".")[1]));
+        console.log(user.name);
+        console.log(user.email);
+        console.log(user.picture);*/
+        rest.enviarJwt(jwt);
+    };
+
+    
+
     this.comprobarSesion = function () {
         let nick = $.cookie("nick");
         if (nick) {
             cw.mostrarMensaje("Bienvenido al sistema, " + nick);
         } else {
             cw.mostrarAgregarUsuario();
+            cw.init();
         }
     };
 

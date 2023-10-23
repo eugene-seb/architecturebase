@@ -1,13 +1,16 @@
 const fs = require("fs");
+const bodyParser=require("body-parser");
 const express = require("express");
 const app = express();
 const passport = require("passport");
 const cookieSession = require("cookie-session");
+const args = process.argv.slice(2);
 require("./server/passport-setup.js");
 const modelo = require("./server/modelo.js");
 const PORT = process.env.PORT || 3000;
 
-let sistema = new modelo.Sistema();
+let test = false;
+test = eval(args[0]); //test=true
 
 app.use(
     express.static(__dirname + "/"),
@@ -16,8 +19,12 @@ app.use(
         keys: ["key1", "key2"],
     }),
     passport.initialize(),
-    passport.session()
+    passport.session(),
+    bodyParser.urlencoded({extended:true}),
+    bodyParser.json()
 );
+
+let sistema = new modelo.Sistema(test);
 
 app.get(
     "/google/callback",
@@ -81,4 +88,13 @@ app.get("/deleteUser/:nick", function (request, response) {
 app.get("/countUsers/", function (request, response) {
     let res = sistema.countUsers();
     response.send(res);
+});
+
+app.post("/enviarJwt", function (request, response) {
+    let jwt = request.body.jwt;
+    let user = JSON.parse(atob(jwt.split(".")[1]));
+    let email = user.email;
+    sistema.buscarOCrearUsuario(email, function (obj) {
+        response.send({ nick: obj.email });
+    });
 });

@@ -1,12 +1,15 @@
 const datos = require("./cad.js");
 
-function Sistema() {
+function Sistema(test) {
     this.usuarios = {};
+    this.test = test;
     this.cad = new datos.CAD();
 
-    this.cad.conectar = function () {
-        console.log("Connect at Mongo Atlas");
-    };
+    if (!this.test) {
+        this.cad.conectar = function () {
+            console.log("Connect at Mongo Atlas");
+        };
+    }
 
     this.buscarOCrearUsuario = function (email, callback) {
         this.cad.buscarOCrearUsuario(email, function (obj) {
@@ -59,4 +62,5 @@ module.exports.Sistema = Sistema;
 function Usuario(nick) {
     this.nick = nick;
     this.email;
+    this.clave;
 }
