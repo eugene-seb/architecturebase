@@ -1,19 +1,32 @@
-const mongo = require("mongodb").MongoClient;
+const { MongoClient, ServerApiVersion } = require("mongodb");
 const ObjectId = require("mongodb").ObjectId;
 
 function CAD() {
-    
+    const uri =
+        "mongodb+srv://user:user@cluster0.iwcma45.mongodb.net/?retryWrites=true&w=majority";
+
     this.usuarios = {};
 
     this.conectar = async function (callback) {
         let cad = this;
-        let client = new mongo(
-            "mongodb+srv://user:user@cluster0.iwcma45.mongodb.net/?retryWrites=true&w=majority"
-        );
-        await client.connet();
-        const database = client.db("sistema");
-        cad.usuarios = database.collection("usuarios");
-        callback(database);
+        let client = new MongoClient(uri, {
+            serverApi: {
+                version: ServerApiVersion.v1,
+                strict: true,
+                deprecationErrors: true,
+            },
+        });
+        try {
+            // Connect the client to the server	(optional starting in v4.7)
+            await client.connect();
+
+            const database = client.db("sistema");
+            cad.usuarios = database.collection("usuarios");
+            //callback(database);
+        } finally {
+            // Ensures that the client will close when you finish/error
+            //await client.close();
+        }
     };
 
     this.buscarOCrearUsuario = function (email, callback) {

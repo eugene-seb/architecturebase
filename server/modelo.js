@@ -6,9 +6,7 @@ function Sistema(test) {
     this.cad = new datos.CAD();
 
     if (!this.test) {
-        this.cad.conectar = function () {
-            console.log("Connect at Mongo Atlas");
-        };
+        this.cad.conectar();
     }
 
     this.buscarOCrearUsuario = function (email, callback) {
