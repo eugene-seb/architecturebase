@@ -1,15 +1,14 @@
 function ClienteRest() {
-    
     this.agregarUsuario = function (nick) {
         $.ajax({
             type: "GET",
             url: "/agregarUsuario/" + nick,
             success: function (data) {
-                let msg="El nick "+nick+" está ocupado";
+                let msg = "El nick " + nick + " está ocupado";
                 if (data.nick != -1) {
                     console.log("Usuario " + nick + " ha sido registrado");
-                    msg="Bienvenido al sistema, "+nick;
-                    $.cookie("nick",nick)
+                    msg = "Bienvenido al sistema, " + nick;
+                    $.cookie("nick", nick);
                 } else {
                     console.log("El nick ya está ocupado");
                 }
@@ -29,7 +28,7 @@ function ClienteRest() {
             url: "/obtenerUsuarios",
             success: function (data) {
                 if (data != -1) {
-                    console.log("Data " + data );
+                    console.log("Data " + data);
                 } else {
                     console.log("No user is register yet.");
                 }
@@ -47,7 +46,8 @@ function ClienteRest() {
             type: "GET",
             url: "/activeUser/" + nick,
             success: function (data) {
-                if (data) { // Should be either true or false
+                if (data) {
+                    // Should be either true or false
                     console.log("the user " + nick + " is active");
                 } else {
                     console.log("the user " + nick + " is not active");
@@ -66,10 +66,13 @@ function ClienteRest() {
             type: "GET",
             url: "/deleteUser/" + nick,
             success: function (data) {
-                if (data) { // Should be either true or false
+                if (data) {
+                    // Should be either true or false
                     console.log("the user " + nick + " has been delete");
                 } else {
-                    console.log("the user " + nick + " is not active to be delete");
+                    console.log(
+                        "the user " + nick + " is not active to be delete"
+                    );
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -86,7 +89,7 @@ function ClienteRest() {
             url: "/countUsers",
             success: function (data) {
                 if (data != -1) {
-                    console.log("Number of users " + data.num );
+                    console.log("Number of users " + data.num);
                 } else {
                     console.log("No user is register yet.");
                 }
@@ -126,4 +129,27 @@ function ClienteRest() {
         });
     };
 
+    this.registrarUsuario = function (email, password) {
+        $.ajax({
+            type: "POST",
+            url: "/registrarUsuario",
+            data: JSON.stringify({ email: email, password: password }),
+            success: function (data) {
+                if (data.nick != -1) {
+                    console.log("Usuario " + data.nick + " ha sido registrado");
+                    $.cookie("nick", data.nick);
+                    cw.limpiar();
+                    cw.mostrarMensaje("Bienvenido al sistema, " + data.nick);
+                    //cw.mostrarLogin();
+                } else {
+                    console.log("El nick está ocupado");
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            },
+            contentType: "application/json",
+        });
+    };
 }

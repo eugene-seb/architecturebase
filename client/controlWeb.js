@@ -28,6 +28,20 @@ function ControlWeb() {
         });
     };
 
+    this.mostrarRegistro = function () {
+        $("#fmRegistro").remove();
+        $("#registro").load("./client/registro.html", function () {
+            $("#btnRegistro").on("click", function () {
+                let email = $("#email").val();
+                let pwd = $("#pwd").val();
+                if (email && pwd) {
+                    rest.registrarUsuario(email, pwd);
+                    console.log(email + " " + pwd);
+                }
+            });
+        });
+    };
+
     this.init = function () {
         let cw = this;
         google.accounts.id.initialize({
@@ -48,14 +62,12 @@ function ControlWeb() {
         rest.enviarJwt(jwt);
     };
 
-    
-
     this.comprobarSesion = function () {
         let nick = $.cookie("nick");
         if (nick) {
             cw.mostrarMensaje("Bienvenido al sistema, " + nick);
         } else {
-            cw.mostrarAgregarUsuario();
+            cw.mostrarRegistro();
             cw.init();
         }
     };

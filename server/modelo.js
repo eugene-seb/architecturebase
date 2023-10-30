@@ -28,6 +28,22 @@ function Sistema(test) {
         return res;
     };
 
+    this.registrarUsuario = function (obj, callback) {
+        let modelo = this;
+        if (!obj.nick) {
+            obj.nick = obj.email;
+        }
+        this.cad.buscarUsuario(obj, function (usr) {
+            if (!usr) {
+                modelo.cad.insertarUsuario(obj, function (res) {
+                    callback(res);
+                });
+            } else {
+                callback({ email: -1 });
+            }
+        });
+    };
+
     this.obtenerUsuarios = function () {
         return this.usuarios;
     };

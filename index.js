@@ -1,5 +1,5 @@
 const fs = require("fs");
-const bodyParser=require("body-parser");
+const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();
 const passport = require("passport");
@@ -20,7 +20,7 @@ app.use(
     }),
     passport.initialize(),
     passport.session(),
-    bodyParser.urlencoded({extended:true}),
+    bodyParser.urlencoded({ extended: true }),
     bodyParser.json()
 );
 
@@ -96,5 +96,11 @@ app.post("/enviarJwt", function (request, response) {
     let email = user.email;
     sistema.buscarOCrearUsuario(email, function (obj) {
         response.send({ nick: obj.email });
+    });
+});
+
+app.post("/registrarUsuario", function (request, response) {
+    sistema.registrarUsuario(request.body, function (res) {
+        response.send({ nick: res.email });
     });
 });
