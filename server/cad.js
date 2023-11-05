@@ -1,45 +1,53 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
-const ObjectId = require("mongodb").ObjectId;
+var mongo = require("mongodb").MongoClient;
+var ObjectId = require("mongodb").ObjectId;
 
 function CAD() {
-    const uri =
-        "mongodb+srv://user:user@cluster0.iwcma45.mongodb.net/?retryWrites=true&w=majority";
-
     this.usuarios = {};
 
     this.conectar = async function (callback) {
         let cad = this;
-        let client = new MongoClient(uri, {
-            serverApi: {
-                version: ServerApiVersion.v1,
-                strict: true,
-                deprecationErrors: true,
-            },
-        });
-        try {
-            // Connect the client to the server	(optional starting in v4.7)
-            await client.connect();
-
-            const database = client.db("sistema");
-            cad.usuarios = database.collection("usuarios");
-            //callback(database);
-        } finally {
-            // Ensures that the client will close when you finish/error
-            //await client.close();
-        }
+        let client = new mongo(
+            "mongodb+srv://user:user@cluster0.iwcma45.mongodb.net/?retryWrites=true&w=majority"
+        );
+        await client.connect();
+        const database = client.db("sistema");
+        cad.usuarios = database.collection("usuarios");
+        callback(database);
     };
 
-    this.buscarOCrearUsuario = function (email, callback) {
-        obtenerOCrear(this.usuarios, { email: email }, callback);
+    this.buscarOCrearUsuario = function (usr, callback) {
+        //buscarOCrear(this.usuarios,{email:email},callback);
+        buscarOCrear(this.usuarios, usr, callback);
     };
 
-    this.buscarUsuario = function (obj, callback) {
-        buscar(this.usuarios, { email: obj.email }, callback);
+    this.buscarUsuario = function (criterio, callback) {
+        buscar(this.usuarios, criterio, callback);
     };
 
     this.insertarUsuario = function (usuario, callback) {
         insertar(this.usuarios, usuario, callback);
     };
+
+    this.actualizarUsuario = function (obj, callback) {
+        actualizar(this.usuarios, obj, callback);
+    };
+
+    function buscarOCrear(coleccion, criterio, callback) {
+        coleccion.findOneAndUpdate(
+            criterio,
+            { $set: criterio },
+            { upsert: true, returnDocument: "after", projection: { email: 1 } },
+            function (err, doc) {
+                if (err) {
+                    throw err;
+                } else {
+                    console.log("Elemento actualizado");
+                    console.log(doc.value.email);
+                    callback({ email: doc.value.email });
+                }
+            }
+        );
+    }
 
     function obtenerOCrear(coleccion, criterio, callback) {
         coleccion.findOneAndUpdate(
@@ -68,6 +76,7 @@ function CAD() {
             }
         });
     }
+
     function insertar(coleccion, elemento, callback) {
         coleccion.insertOne(elemento, function (err, result) {
             if (err) {
@@ -77,6 +86,28 @@ function CAD() {
                 callback(elemento);
             }
         });
+    }
+
+    function actualizar(coleccion, obj, callback) {
+        coleccion.findOneAndUpdate(
+            { _id: ObjectId(obj._id) },
+            { $set: obj },
+            {
+                upsert: false,
+                returnDocument: "after",
+                projection: { email: 1 },
+            },
+            function (err, doc) {
+                if (err) {
+                    throw err;
+                } else {
+                    console.log("Elemento actualizado");
+                    //console.log(doc);
+                    //console.log(doc);
+                    callback({ email: doc.value.email });
+                }
+            }
+        );
     }
 }
 module.exports.CAD = CAD;

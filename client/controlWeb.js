@@ -1,34 +1,42 @@
 function ControlWeb() {
     this.mostrarAgregarUsuario = function () {
+        //cada vez que se llame a este metodo, si esta dibujado que lo borre(para no tener varios)(si no esta dibujado no borra)
+        $("#bnv").remove();
         $("#mAU").remove();
-        let cadena = '<div id="mAU">';
-        cadena = cadena + '<div class="card"><div class="card-body">';
-        cadena = cadena + '<div class="form-group">';
-        cadena = cadena + '<label for="nick">Nick:</label>';
-        cadena =
-            cadena +
-            '<p><input type="text" class="form-control" id="nick" placeholder="introduce un nick"></p>';
+        //guardamos el html en una variable
+        //usamos comillas simples para la cadena porque los atributos de las etiquetas usan comillas dobles
+        let cadena = '<div id="mAU" class="form-group">';
+        cadena = cadena + '<label for="nick">Introduce el nick:</label>';
+        cadena = cadena + '<input type="text" class="form-control" id="nick">';
         cadena =
             cadena +
             '<button id="btnAU" type="submit" class="btn btn-primary">Submit</button>';
         cadena =
             cadena +
-            '<div><a href="/auth/google"><img src="./client/img/google.png" style="height:40px;"></a></div>';
+            '<div><a href="/auth/google"><img src="./client/img/btn_google_signin_dark_focus_web.png" style="height:40px;"></a></div>';
+        cadena =
+            cadena +
+            '<div><a href="/auth/facebook"><img src="./client/img/oL5c2.png" style="height:40px;"></a></div>';
         cadena = cadena + "</div>";
-        cadena = cadena + "</div></div></div>";
 
         $("#au").append(cadena); //au = agregar usuario
 
         $("#btnAU").on("click", function () {
+            //recoger el valor del input text
+            //llamar al servidor usando rest
+
             let nick = $("#nick").val();
             if (nick) {
-                $("#mAU").remove();
                 rest.agregarUsuario(nick);
             }
+            $("#mAU").remove();
         });
     };
 
     this.mostrarRegistro = function () {
+        if ($.cookie("nick")) {
+            return true;
+        }
         $("#fmRegistro").remove();
         $("#registro").load("./client/registro.html", function () {
             $("#btnRegistro").on("click", function () {
@@ -36,6 +44,20 @@ function ControlWeb() {
                 let pwd = $("#pwd").val();
                 if (email && pwd) {
                     rest.registrarUsuario(email, pwd);
+                    console.log(email + " " + pwd);
+                }
+            });
+        });
+    };
+
+    this.mostrarLogin = function () {
+        $("#fmLogin").remove();
+        $("#registro").load("./client/login.html", function () {
+            $("#btnLogin").on("click", function () {
+                let email = $("#email").val();
+                let pwd = $("#pwd").val();
+                if (email && pwd) {
+                    rest.loginUsuario(email, pwd);
                     console.log(email + " " + pwd);
                 }
             });
@@ -63,23 +85,31 @@ function ControlWeb() {
     };
 
     this.comprobarSesion = function () {
+        //let nick=localStorage.getItem("nick");
         let nick = $.cookie("nick");
         if (nick) {
-            cw.mostrarMensaje("Bienvenido al sistema, " + nick);
+            cw.mostrarMsg("Bienvenido al sistema, " + nick);
         } else {
+            //cw.mostrarAgregarUsuario();
             cw.mostrarRegistro();
             cw.init();
         }
     };
 
-    this.mostrarMensaje = function (msg) {
-        $("#mMsg").remove();
-        let cadena = '<p id="mMsg">' + msg + "</p>";
-        $("#msg").append(cadena);
+    this.salir = function () {
+        let nick = $.cookie("nick");
+        $.removeCookie("nick");
+
+        location.reload();
+        cw.mostrarMsg("Cerrando sesión de " + nick);
     };
 
-    this.salir = function () {
-        $.removeCookie("nick");
-        location.reload();
+    this.limpiar = function () {
+        $("#mAU").remove();
+    };
+    this.mostrarMsg = function (msg) {
+        $("#mMsg").remove();
+        let cadena = '<h3 id="mMsg">' + msg + "</h3>";
+        $("#msg").append(cadena);
     };
 }
