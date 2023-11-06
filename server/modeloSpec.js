@@ -32,7 +32,8 @@ describe("El sistema", function () {
     });
 
     it("Inicialmente no hay usuarios", function () {
-        expect(sistema.countUsers()).toEqual(0);
+        const num =sistema.countUsers();
+        expect(num.num).toEqual(0);
     });
 
     it("User exists", function () {

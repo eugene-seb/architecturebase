@@ -24,6 +24,7 @@ app.use(
     bodyParser.urlencoded({ extended: true }),
     bodyParser.json()
 );
+
 passport.use(
     new LocalStrategy(
         { usernameField: "email", passwordField: "password" },
@@ -43,6 +44,14 @@ passport.use(
 );
 
 let sistema = new modelo.Sistema(test);
+
+const haIniciado = function (request, response, next) {
+    if (request.user) {
+        next();
+    } else {
+        response.redirect("/");
+    }
+};
 
 app.get(
     "/google/callback",
@@ -110,7 +119,7 @@ app.get("/agregarUsuario/:nick", function (request, response) {
     response.send(res);
 });
 
-app.get("/obtenerUsuarios/", function (request, response) {
+app.get("/obtenerUsuarios/", haIniciado, function (request, response) {
     let res = sistema.obtenerUsuarios();
     response.send(res);
 });
@@ -126,7 +135,7 @@ app.get("/usuarioActivo/:nick", function (request, response) {
     let res = sistema.usuarioActivo(nick);
     response.send(res);
 });
-app.get("/numeroUsuarios", function (request, response) {
+app.get("/numeroUsuarios", haIniciado, function (request, response) {
     let res = sistema.numeroUsuarios();
     response.send(res);
 });
@@ -142,7 +151,7 @@ app.get("/eliminarUsuario/:nick", function (request, response) {
     response.send(res);
 });
 
-app.get("/countUsers/", function (request, response) {
+app.get("/countUsers/", haIniciado, function (request, response) {
     let res = sistema.countUsers();
     response.send(res);
 });
@@ -179,3 +188,12 @@ app.post(
         successRedirect: "/ok",
     })
 );
+
+app.get("/cerrarSesion", haIniciado, function (request, response) {
+    let nick = request.user.nick;
+    request.logout();
+    response.redirect("/");
+    if (nick) {
+        sistema.eliminarUsuario(nick);
+    }
+});

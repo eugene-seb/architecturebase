@@ -97,11 +97,10 @@ function ControlWeb() {
     };
 
     this.salir = function () {
-        let nick = $.cookie("nick");
+        //localStorage.removeItem("nick");
         $.removeCookie("nick");
-
         location.reload();
-        cw.mostrarMsg("Cerrando sesión de " + nick);
+        rest.cerrarSesion();
     };
 
     this.limpiar = function () {

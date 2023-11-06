@@ -47,29 +47,25 @@ function ClienteRest() {
         });
     };
 
-    this.usuarioActivo=function(nick){
-        $.getJSON("/usuarioActivo/"+nick,function(data){ 
-            if (data.res){
-                console.log("El usuario "+nick+" está activo")
+    this.usuarioActivo = function (nick) {
+        $.getJSON("/usuarioActivo/" + nick, function (data) {
+            if (data.res) {
+                console.log("El usuario " + nick + " está activo");
+            } else {
+                console.log("El usuario " + nick + " no está activo");
             }
-            else{
-                console.log("El usuario "+nick+" no está activo")
-            }
-            
-    });
-    }
+        });
+    };
 
-    this.eliminarUsuario=function(nick){
-        $.getJSON("/eliminarUsuario/"+nick,function(data){ 
-            if (data.res==nick){
-                console.log("El usuario "+nick+" ha sido eliminado")
+    this.eliminarUsuario = function (nick) {
+        $.getJSON("/eliminarUsuario/" + nick, function (data) {
+            if (data.res == nick) {
+                console.log("El usuario " + nick + " ha sido eliminado");
+            } else {
+                console.log("El usuario " + nick + " no se ha podido eliminar");
             }
-            else{
-                console.log("El usuario "+nick+" no se ha podido eliminar")
-            }
-            
-    });
-    }
+        });
+    };
 
     this.countUsers = function () {
         $.ajax({
@@ -90,33 +86,32 @@ function ClienteRest() {
         });
     };
 
-    this.enviarJwt=function(jwt){
+    this.enviarJwt = function (jwt) {
         $.ajax({
-        type:'POST',
-        url:'/enviarJwt',
-        data: JSON.stringify({"jwt":jwt}),
-        success:function(data){
-        let msg="El nick "+nick+" está ocupado";
-        if (data.nick!=-1){
-            console.log("Usuario "+data.nick+" ha sido registrado");
-            msg="Bienvenido al sistema, "+data.nick;
-            $.cookie("nick",data.nick);
-        }
-        else{
-            console.log("El nick ya está ocupado");
-        }
-        cw.limpiar();
-        cw.mostrarMsg(msg);
-        },
-        error:function(xhr, textStatus, errorThrown){
-        //console.log(JSON.parse(xhr.responseText));
-        console.log("Status: " + textStatus);
-        console.log("Error: " + errorThrown);
-        },
-        contentType:'application/json'
-        //dataType:'json'
+            type: "POST",
+            url: "/enviarJwt",
+            data: JSON.stringify({ jwt: jwt }),
+            success: function (data) {
+                let msg = "El nick " + nick + " está ocupado";
+                if (data.nick != -1) {
+                    console.log("Usuario " + data.nick + " ha sido registrado");
+                    msg = "Bienvenido al sistema, " + data.nick;
+                    $.cookie("nick", data.nick);
+                } else {
+                    console.log("El nick ya está ocupado");
+                }
+                cw.limpiar();
+                cw.mostrarMsg(msg);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                //console.log(JSON.parse(xhr.responseText));
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            },
+            contentType: "application/json",
+            //dataType:'json'
         });
-    }
+    };
 
     this.registrarUsuario = function (email, password) {
         $.ajax({
@@ -165,6 +160,13 @@ function ClienteRest() {
                 console.log("Error: " + errorThrown);
             },
             contentType: "application/json",
+        });
+    };
+    
+    this.cerrarSesion = function () {
+        $.getJSON("/cerrarSesion", function () {
+            console.log("Sesión cerrada");
+            $.removeCookie("nick");
         });
     };
 }
