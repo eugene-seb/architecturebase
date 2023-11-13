@@ -51,9 +51,14 @@ function ControlWeb() {
     };
 
     this.mostrarLogin = function () {
+        if ($.cookie('nick')){
+            return true;
+        };
         $("#fmLogin").remove();
         $("#registro").load("./client/login.html", function () {
-            $("#btnLogin").on("click", function () {
+            $("#btnLogin").on("click", function (e) {
+                e.preventDefault();
+                
                 let email = $("#email").val();
                 let pwd = $("#pwd").val();
                 if (email && pwd) {
