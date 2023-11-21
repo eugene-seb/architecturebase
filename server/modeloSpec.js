@@ -10,7 +10,7 @@ describe("El sistema", function () {
         let nick = "name";
         sistema.agregarUsuario(nick);
         let users = sistema.obtenerUsuarios();
-        expect(sistema.countUsers()).toEqual(1);
+        expect(sistema.countUsers().num).toEqual(1);
         expect(users[nick].nick).toBe(nick);
     });
 

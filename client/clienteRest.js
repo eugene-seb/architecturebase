@@ -127,18 +127,14 @@ function ClienteRest() {
                     //cw.mostrarMsg("Bienvenido al sistema, "+data.nick);
                     cw.mostrarLogin();
                 } else {
-                    cw.limpiar();
-                    cw.mostrarLogin();
-
                     console.log("Hay un usuario registrado con ese email");
-					cw.mostrarMensajeLogin("Hay un usuario registrado con ese email");
+                    cw.mostrarMensajeLogin("Hay un usuario registrado con ese email");
+                    cw.monstrarModal("Hay un usuario registrado con ese email");
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
                 console.log("Status: " + textStatus);
                 console.log("Error: " + errorThrown);
-                console.log("Hay un usuario registrado con ese email");
-				cw.mostrarMensajeLogin("Hay un usuario registrado con ese email");
             },
             contentType: "application/json",
         });
@@ -158,7 +154,8 @@ function ClienteRest() {
                     ///cw.mostrarLogin();
                 } else {
                     console.log("Usuario o clave incorrectos");
-					cw.mostrarMensajeLogin("Usuario o clave incorrectos");
+                    cw.mostrarMensajeLogin("Usuario o clave incorrectos");
+                    cw.monstrarModal("Usuario o clave incorrectos");
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -168,7 +165,7 @@ function ClienteRest() {
             contentType: "application/json",
         });
     };
-    
+
     this.cerrarSesion = function () {
         $.getJSON("/cerrarSesion", function () {
             console.log("Sesión cerrada");

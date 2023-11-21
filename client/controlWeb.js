@@ -36,16 +36,27 @@ function ControlWeb() {
         }
         $("#fmRegistro").remove();
         $("#registro").load("./client/registro.html", function () {
-            $("#btnRegistro").on("click", function () {
+            $("#btnRegistro").on("click", function (e) {
+                e.preventDefault();
                 let email = $("#email").val();
                 let pwd = $("#pwd").val();
-                if (email && pwd) {
+                if (IsEmail(email) && pwd) {
                     rest.registrarUsuario(email, pwd);
                     console.log(email + " " + pwd);
+                } else {
+                    // TODO :: monstrarModal("Bad email");
                 }
             });
         });
     };
+    function IsEmail(email) {
+        var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        if (!regex.test(email)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     this.mostrarLogin = function () {
         if ($.cookie("nick")) {
@@ -116,9 +127,16 @@ function ControlWeb() {
         $("#msg").append(cadena);
     };
 
-    this.mostrarMensajeLogin=function(msg){
-        $('#mMsgLogin').remove();
-        let cadena='<div id="mMsgLogin">'+msg+'</div>';
-        $('#msg').append(cadena);
-    }
+    this.mostrarMensajeLogin = function (msg) {
+        $("#mMsgLogin").remove();
+        let cadena = '<div id="mMsgLogin">' + msg + "</div>";
+        $("#msg").append(cadena);
+    };
+
+    this.monstrarModal = function (msg) {
+        $("#msgModal").remove();
+        let cadena = "<div id='msgModal'>" + msg + "</div>";
+        $("#bModal").append(cadena);
+        $("#myModal").modal();
+    };
 }
