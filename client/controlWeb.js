@@ -14,9 +14,6 @@ function ControlWeb() {
         cadena =
             cadena +
             '<div><a href="/auth/google"><img src="./client/img/btn_google_signin_dark_focus_web.png" style="height:40px;"></a></div>';
-        cadena =
-            cadena +
-            '<div><a href="/auth/facebook"><img src="./client/img/oL5c2.png" style="height:40px;"></a></div>';
         cadena = cadena + "</div>";
 
         $("#au").append(cadena); //au = agregar usuario
@@ -51,14 +48,13 @@ function ControlWeb() {
     };
 
     this.mostrarLogin = function () {
-        if ($.cookie('nick')){
+        if ($.cookie("nick")) {
             return true;
-        };
+        }
         $("#fmLogin").remove();
         $("#registro").load("./client/login.html", function () {
             $("#btnLogin").on("click", function (e) {
                 e.preventDefault();
-                
                 let email = $("#email").val();
                 let pwd = $("#pwd").val();
                 if (email && pwd) {
@@ -110,10 +106,19 @@ function ControlWeb() {
 
     this.limpiar = function () {
         $("#mAU").remove();
+        $("#fmRegistro").remove();
+        $("#fmLogin").remove();
     };
+
     this.mostrarMsg = function (msg) {
         $("#mMsg").remove();
         let cadena = '<h3 id="mMsg">' + msg + "</h3>";
         $("#msg").append(cadena);
     };
+
+    this.mostrarMensajeLogin=function(msg){
+        $('#mMsgLogin').remove();
+        let cadena='<div id="mMsgLogin">'+msg+'</div>';
+        $('#msg').append(cadena);
+    }
 }

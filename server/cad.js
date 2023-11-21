@@ -32,6 +32,17 @@ function CAD() {
         actualizar(this.usuarios, obj, callback);
     };
 
+    this.eliminarUsuario = function (criterio, callback) {
+        eliminar(this.usuarios, criterio, callback);
+    };
+
+    function eliminar(coleccion, criterio, callback) {
+        coleccion.deleteOne(criterio, function (err, result) {
+            if (err) throw err;
+            callback(result);
+        });
+    }
+
     function buscarOCrear(coleccion, criterio, callback) {
         coleccion.findOneAndUpdate(
             criterio,

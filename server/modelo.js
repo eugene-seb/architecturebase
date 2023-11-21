@@ -1,4 +1,5 @@
-const correo=require("./email.js");
+const bcrypt = require("bcrypt");
+const correo = require("./email.js");
 const datos = require("./cad.js");
 
 function Sistema(test) {
@@ -41,10 +42,13 @@ function Sistema(test) {
                 //el usuario no existe, luego lo puedo registrar
                 obj.key = Date.now().toString();
                 obj.confirmada = false;
-                modelo.cad.insertarUsuario(obj, function (res) {
-                    callback(res);
+                bcrypt.hash(obj.password, 10, function (err, hash) {
+                    obj.password = hash;
+                    modelo.cad.insertarUsuario(obj, function (res) {
+                        callback(res);
+                    });
+                    correo.enviarEmail(obj.email, obj.key, "Confirmar cuenta");
                 });
-                correo.enviarEmail(obj.email, obj.key, "Confirmar cuenta");
             } else {
                 callback({ email: -1 });
             }
@@ -55,8 +59,18 @@ function Sistema(test) {
         this.cad.buscarUsuario(
             { email: obj.email, confirmada: true },
             function (usr) {
-                if (usr && usr.password == obj.password) {
-                    callback(usr);
+                if (usr) {
+                    bcrypt.compare(
+                        obj.password, // plaintext password
+                        usr.password, // hashed password
+                        function (err, result) {
+                            if (result) {
+                                callback(usr);
+                            } else {
+                                callback({ email: -1 });
+                            }
+                        }
+                    );
                 } else {
                     callback({ email: -1 });
                 }
@@ -64,12 +78,14 @@ function Sistema(test) {
         );
     };
 
-    this.usuarioGoogle=function(usr,callback){
-        this.cad.buscarOCrearUsuario(usr,function(res){
-            console.log("El usuario "+res.email+" está registrado en el sistema");
+    this.usuarioGoogle = function (usr, callback) {
+        this.cad.buscarOCrearUsuario(usr, function (res) {
+            console.log(
+                "El usuario " + res.email + " está registrado en el sistema"
+            );
             callback(res);
         });
-    }
+    };
 
     this.usuarioOAuth = function (usr, callback) {
         this.cad.buscarOCrearUsuario(usr, function (res) {
@@ -162,6 +178,7 @@ function Usuario(nick) {
     this.nick = nick;
     this.email;
     this.clave;
+    this.password;
 }
 
 function Usuario(nick, password) {

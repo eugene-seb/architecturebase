@@ -32,11 +32,7 @@ passport.use(
             sistema.loginUsuario(
                 { email: email, password: password },
                 function (user) {
-                    if (user.email != -1) {
-                        return done(null, user);
-                    } else {
-                        return done(-1);
-                    }
+                    return done(null, user);
                 }
             );
         }
@@ -52,8 +48,6 @@ const haIniciado = function (request, response, next) {
         response.redirect("/");
     }
 };
-
-
 
 app.get("/good", function (request, response) {
     let email = request.user.emails[0].value;
@@ -97,26 +91,6 @@ app.get("/", function (request, response) {
     response.send(contenido);
 });
 
-app.get("/auth/facebook", passport.authenticate("facebook"));
-
-app.get(
-    "/auth/facebook/callback",
-    passport.authenticate("facebook", { failureRedirect: "/fallo" }),
-    function (req, res) {
-        // Successful authentication, redirect home.
-        res.redirect("/goodFb");
-    }
-);
-
-app.get("/goodFb", function (request, response) {
-    let nick = request.user.displayName;
-    //if (nick){  //no tiene mucho sentido este if porque si viene de google es que existe
-    sistema.usuarioOAuth({ nick: nick }, function (usr) {
-        response.cookie("nick", nick);
-        response.redirect("/");
-    });
-});
-
 app.listen(PORT, () => {
     console.log(`App está escuchando en el puerto ${PORT}`);
     console.log("Ctrl+C para salir");
@@ -133,13 +107,13 @@ app.get("/obtenerUsuarios/", haIniciado, function (request, response) {
     response.send(res);
 });
 
-app.get("/activeUser/:nick", function (request, response) {
+app.get("/activeUser/:nick", haIniciado, function (request, response) {
     let nick = request.params.nick;
     let res = sistema.activeUser(nick);
     response.send(res);
 });
 
-app.get("/usuarioActivo/:nick", function (request, response) {
+app.get("/usuarioActivo/:nick", haIniciado, function (request, response) {
     let nick = request.params.nick;
     let res = sistema.usuarioActivo(nick);
     response.send(res);
@@ -149,12 +123,12 @@ app.get("/numeroUsuarios", haIniciado, function (request, response) {
     response.send(res);
 });
 
-app.get("/deleteUser/:nick", function (request, response) {
+app.get("/deleteUser/:nick", haIniciado, function (request, response) {
     let nick = request.params.nick;
     let res = sistema.deleteUser(nick);
     response.send(res);
 });
-app.get("/eliminarUsuario/:nick", function (request, response) {
+app.get("/eliminarUsuario/:nick", haIniciado, function (request, response) {
     let nick = request.params.nick;
     let res = sistema.eliminarUsuario(nick);
     response.send(res);
@@ -173,6 +147,7 @@ app.post("/enviarJwt", function (request, response) {
         response.send({ nick: obj.email });
     });
 });
+
 app.get("/confirmarUsuario/:email/:key", function (request, response) {
     let email = request.params.email;
     let key = request.params.key;

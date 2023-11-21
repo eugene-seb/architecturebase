@@ -46,21 +46,28 @@
         </ul>
     </nav>
 
-    <div class="container">
-        <h3>Architecturebase</h3>
-        <div id="au"></div>
-        <div id="registro"></div>
-        <div id="login"></div>
-        <div id="msg"></div>
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h3>Architecturebase</h3>
+                <div id="au"></div>
+                <div id="lu"></div>
+                <div id="registro"></div>
+                <div id="login"></div>
+                <div id="msg"></div>
+            </div>
+
+
+        </div>
+
     </div>
 
     <div id="g_id_onload" data-client_id="590521076034-qevao0sekmpnfb6if60oobcv74h874pv.apps.googleusercontent.com"
         data-login_uri="http://localhost:3000/oneTap/callback" data-skip_prompt_cookie="nick"></div>
 
-    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-
     <script>
         function ini() {
+
             rest = new ClienteRest();
             cw = new ControlWeb();
 

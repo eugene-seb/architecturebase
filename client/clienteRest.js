@@ -124,16 +124,21 @@ function ClienteRest() {
                     // mostrar un mensaje diciendo: consulta tu email
                     //$.cookie("nick",data.nick);
                     cw.limpiar();
-                    //cw.mostrarMensaje("Bienvenido al sistema, "+data.nick);
+                    //cw.mostrarMsg("Bienvenido al sistema, "+data.nick);
                     cw.mostrarLogin();
                 } else {
-                    console.log("El nick está ocupado");
-                    cw.mostrarMensajeLogin("El nick está ocupado");
+                    cw.limpiar();
+                    cw.mostrarLogin();
+
+                    console.log("Hay un usuario registrado con ese email");
+					cw.mostrarMensajeLogin("Hay un usuario registrado con ese email");
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
                 console.log("Status: " + textStatus);
                 console.log("Error: " + errorThrown);
+                console.log("Hay un usuario registrado con ese email");
+				cw.mostrarMensajeLogin("Hay un usuario registrado con ese email");
             },
             contentType: "application/json",
         });
@@ -149,10 +154,11 @@ function ClienteRest() {
                     console.log("Usuario " + data.nick + " ha sido registrado");
                     $.cookie("nick", data.nick);
                     cw.limpiar();
-                    cw.mostrarMensaje("Bienvenido al sistema, " + data.nick);
+                    cw.mostrarMsg("Bienvenido al sistema, " + data.nick);
                     ///cw.mostrarLogin();
                 } else {
-                    console.log("El nick está ocupado");
+                    console.log("Usuario o clave incorrectos");
+					cw.mostrarMensajeLogin("Usuario o clave incorrectos");
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
