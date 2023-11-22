@@ -44,19 +44,15 @@ function ControlWeb() {
                     rest.registrarUsuario(email, pwd);
                     console.log(email + " " + pwd);
                 } else {
-                    // TODO :: monstrarModal("Bad email");
+                    let msg = "Bad credentials";
+                    $("#msgModal").remove();
+                    let cadena = "<div id='msgModal'>" + msg + "</div>";
+                    $("#bModal").append(cadena);
+                    $("#myModal").modal();
                 }
             });
         });
     };
-    function IsEmail(email) {
-        var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-        if (!regex.test(email)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     this.mostrarLogin = function () {
         if ($.cookie("nick")) {
@@ -68,13 +64,29 @@ function ControlWeb() {
                 e.preventDefault();
                 let email = $("#email").val();
                 let pwd = $("#pwd").val();
-                if (email && pwd) {
+                if (IsEmail(email) && pwd) {
                     rest.loginUsuario(email, pwd);
                     console.log(email + " " + pwd);
+                } else {
+                    let msg = "Bad credentials";
+                    $("#msgModal").remove();
+                    let cadena = "<div id='msgModal'>" + msg + "</div>";
+                    $("#bModal").append(cadena);
+                    $("#myModal").modal();
                 }
             });
         });
     };
+
+    function IsEmail(email) {
+        var regex =
+            /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        if (!regex.test(email)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     this.init = function () {
         let cw = this;
