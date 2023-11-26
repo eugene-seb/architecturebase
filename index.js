@@ -51,15 +51,15 @@ const haIniciado = function (request, response, next) {
 
 app.get("/good", function (request, response) {
     let email = request.user.emails[0].value;
-    //if (nick){  //no tiene mucho sentido este if porque si viene de google es que existe
+    //if (email){  //no tiene mucho sentido este if porque si viene de google es que existe
     sistema.usuarioOAuth({ email: email }, function (usr) {
-        response.cookie("nick", usr.email);
+        response.cookie("email", usr.email);
         response.redirect("/");
     });
 });
 
 app.get("/fallo", function (request, response) {
-    response.send({ nick: "nook" });
+    response.send({ email: "nook" });
 });
 
 app.get(
@@ -82,7 +82,7 @@ app.post(
 );
 
 app.get("/ok", function (request, response) {
-    response.send({ nick: request.user.email });
+    response.send({ email: request.user.email });
 });
 
 app.get("/", function (request, response) {
@@ -96,9 +96,9 @@ app.listen(PORT, () => {
     console.log("Ctrl+C para salir");
 });
 
-app.get("/agregarUsuario/:nick", function (request, response) {
-    let nick = request.params.nick;
-    let res = sistema.agregarUsuario(nick);
+app.get("/agregarUsuario/:email", function (request, response) {
+    let email = request.params.email;
+    let res = sistema.agregarUsuario(email);
     response.send(res);
 });
 
@@ -107,15 +107,15 @@ app.get("/obtenerUsuarios/", haIniciado, function (request, response) {
     response.send(res);
 });
 
-app.get("/activeUser/:nick", haIniciado, function (request, response) {
-    let nick = request.params.nick;
-    let res = sistema.activeUser(nick);
+app.get("/activeUser/:email", haIniciado, function (request, response) {
+    let email = request.params.email;
+    let res = sistema.activeUser(email);
     response.send(res);
 });
 
-app.get("/usuarioActivo/:nick", haIniciado, function (request, response) {
-    let nick = request.params.nick;
-    let res = sistema.usuarioActivo(nick);
+app.get("/usuarioActivo/:email", haIniciado, function (request, response) {
+    let email = request.params.email;
+    let res = sistema.usuarioActivo(email);
     response.send(res);
 });
 app.get("/numeroUsuarios", haIniciado, function (request, response) {
@@ -123,14 +123,14 @@ app.get("/numeroUsuarios", haIniciado, function (request, response) {
     response.send(res);
 });
 
-app.get("/deleteUser/:nick", haIniciado, function (request, response) {
-    let nick = request.params.nick;
-    let res = sistema.deleteUser(nick);
+app.get("/deleteUser/:email", haIniciado, function (request, response) {
+    let email = request.params.email;
+    let res = sistema.deleteUser(email);
     response.send(res);
 });
-app.get("/eliminarUsuario/:nick", haIniciado, function (request, response) {
-    let nick = request.params.nick;
-    let res = sistema.eliminarUsuario(nick);
+app.get("/eliminarUsuario/:email", haIniciado, function (request, response) {
+    let email = request.params.email;
+    let res = sistema.eliminarUsuario(email);
     response.send(res);
 });
 
@@ -144,7 +144,7 @@ app.post("/enviarJwt", function (request, response) {
     let user = JSON.parse(atob(jwt.split(".")[1]));
     let email = user.email;
     sistema.usuarioOAuth({ email: email }, function (obj) {
-        response.send({ nick: obj.email });
+        response.send({ email: obj.email });
     });
 });
 
@@ -153,7 +153,7 @@ app.get("/confirmarUsuario/:email/:key", function (request, response) {
     let key = request.params.key;
     sistema.confirmarUsuario({ email: email, key: key }, function (usr) {
         if (usr.email != -1) {
-            response.cookie("nick", usr.email);
+            response.cookie("email", usr.email);
         }
         response.redirect("/");
     });
@@ -161,7 +161,7 @@ app.get("/confirmarUsuario/:email/:key", function (request, response) {
 
 app.post("/registrarUsuario", function (request, response) {
     sistema.registrarUsuario(request.body, function (res) {
-        response.send({ nick: res.email });
+        response.send({ email: res.email });
     });
 });
 
@@ -174,10 +174,10 @@ app.post(
 );
 
 app.get("/cerrarSesion", haIniciado, function (request, response) {
-    let nick = request.user.nick;
+    let email = request.user.email;
     request.logout();
     response.redirect("/");
-    if (nick) {
-        sistema.eliminarUsuario(nick);
+    if (email) {
+        sistema.eliminarUsuario(email);
     }
 });

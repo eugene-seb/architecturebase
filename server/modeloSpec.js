@@ -7,28 +7,28 @@ describe("El sistema", function () {
     });
 
     it("Add user.", function () {
-        let nick = "name";
-        sistema.agregarUsuario(nick);
+        let email = "name";
+        sistema.agregarUsuario(email);
         let users = sistema.obtenerUsuarios();
         expect(sistema.countUsers().num).toEqual(1);
-        expect(users[nick].nick).toBe(nick);
+        expect(users[email].email).toBe(email);
     });
 
     it("Delete user", function () {
-        let nick = "name";
-        sistema.agregarUsuario(nick);
-        expect(sistema.deleteUser(nick)).toBe(true);
+        let email = "name";
+        sistema.agregarUsuario(email);
+        expect(sistema.deleteUser(email)).toBe(true);
     });
 
     it("Get All users", function () {
-        sistema.agregarUsuario("nick1");
-        sistema.agregarUsuario("nick2");
+        sistema.agregarUsuario("email1");
+        sistema.agregarUsuario("email2");
 
         const users = sistema.obtenerUsuarios();
 
         expect(Object.keys(users).length).toBe(2);
-        expect(users["nick1"].nick).toBe("nick1");
-        expect(users["nick2"].nick).toBe("nick2");
+        expect(users["email1"].email).toBe("email1");
+        expect(users["email2"].email).toBe("email2");
     });
 
     it("Inicialmente no hay usuarios", function () {
@@ -37,9 +37,9 @@ describe("El sistema", function () {
     });
 
     it("User exists", function () {
-		sistema.agregarUsuario("nick1");
-        sistema.agregarUsuario("nick2");
+		sistema.agregarUsuario("email1");
+        sistema.agregarUsuario("email2");
 
-        expect(sistema.activeUser("nick")).toBe(false);
+        expect(sistema.activeUser("email")).toBe(false);
     });
 });

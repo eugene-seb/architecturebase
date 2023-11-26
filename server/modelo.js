@@ -20,22 +20,22 @@ function Sistema(test) {
         });
     };
 
-    this.agregarUsuario = function (nick) {
-        let res = { nick: -1 };
-        if (!this.usuarios[nick]) {
-            this.usuarios[nick] = new Usuario(nick);
-            res.nick = nick;
-            console.log("Nuevo usuario en el sistema:" + nick);
+    this.agregarUsuario = function (email) {
+        let res = { email: -1 };
+        if (!this.usuarios[email]) {
+            this.usuarios[email] = new Usuario(email);
+            res.email = email;
+            console.log("Nuevo usuario en el sistema:" + email);
         } else {
-            console.log("el nick " + nick + " está en uso");
+            console.log("el email " + email + " está en uso");
         }
         return res;
     };
 
     this.registrarUsuario = function (obj, callback) {
         let modelo = this;
-        if (!obj.nick) {
-            obj.nick = obj.email;
+        if (!obj.email) {
+            obj.email = obj.email;
         }
         this.cad.buscarUsuario(obj, function (usr) {
             if (!usr) {
@@ -108,40 +108,40 @@ function Sistema(test) {
 
     /**
      * Check if the user exist
-     * @param {*} nick
+     * @param {*} email
      * @returns
      */
-    this.activeUser = function (nick) {
+    this.activeUser = function (email) {
         for (let n in this.usuarios) {
-            if (this.usuarios[n].nick == nick) return true;
+            if (this.usuarios[n].email == email) return true;
         }
         return false;
     };
 
-    this.usuarioActivo = function (nick) {
+    this.usuarioActivo = function (email) {
         let res = { res: false };
-        if (nick in this.usuarios) {
+        if (email in this.usuarios) {
             res = { res: true };
         }
         return res;
     };
 
-    this.deleteUser = function (nick) {
-        if (this.activeUser(nick)) {
-            delete this.usuarios[nick];
+    this.deleteUser = function (email) {
+        if (this.activeUser(email)) {
+            delete this.usuarios[email];
             return true;
         }
         return false;
     };
 
-    this.eliminarUsuario = function (nick) {
+    this.eliminarUsuario = function (email) {
         let res = { "res:": -1 };
-        if (nick in this.usuarios) {
-            delete this.usuarios[nick];
-            console.log("Usuario " + nick + " borrado");
-            res = { res: nick };
+        if (email in this.usuarios) {
+            delete this.usuarios[email];
+            console.log("Usuario " + email + " borrado");
+            res = { res: email };
         } else {
-            console.log("No existe el usuario " + nick);
+            console.log("No existe el usuario " + email);
         }
         return res;
     };
@@ -174,14 +174,13 @@ function Sistema(test) {
 }
 module.exports.Sistema = Sistema;
 
-function Usuario(nick) {
-    this.nick = nick;
-    this.email;
+function Usuario(email) {
+    this.email = email;
     this.clave;
     this.password;
 }
 
-function Usuario(nick, password) {
-    this.nick = nick;
+function Usuario(email, password) {
+    this.email = email;
     this.password = password;
 }
