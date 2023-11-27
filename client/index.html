@@ -19,10 +19,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"
         integrity="sha512-3j3VU6WC5rPQB4Ld1jnLV7Kd5xr+cq9avvhwqzbH/taCRNURoeEpoPBK9pDyeukwSxwRPJ8fDgvYXd6SkaZ2TA=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"
+        integrity="sha512-zoJXRvW2gC8Z0Xo3lBbao5+AS3g6YWr5ztKqaicua11xHo+AvE1b0lT9ODgrHTmNUxeCw0Ry4BGRYZfXu70weg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="./client/clienteRest.js"></script>
     <script src="./client/controlWeb.js"></script>
+    <script src="./client/ClienteWS.js"></script>
 </head>
 
 <body onload="ini();">
@@ -90,9 +94,11 @@
         function ini() {
 
             rest = new ClienteRest();
-            cw = new ControlWeb();
 
+            cw = new ControlWeb();
             cw.comprobarSesion();
+
+            ws=new ClienteWS();
         }
     </script>
 </body>
