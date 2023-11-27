@@ -6,8 +6,8 @@ function ControlWeb() {
         //guardamos el html en una variable
         //usamos comillas simples para la cadena porque los atributos de las etiquetas usan comillas dobles
         let cadena = '<div id="mAU" class="form-group">';
-        cadena = cadena + '<label for="nick">Introduce el nick:</label>';
-        cadena = cadena + '<input type="text" class="form-control" id="nick">';
+        cadena = cadena + '<label for="email">Introduce el email:</label>';
+        cadena = cadena + '<input type="text" class="form-control" id="email">';
         cadena =
             cadena +
             '<button id="btnAU" type="submit" class="btn btn-primary">Submit</button>';
@@ -22,16 +22,16 @@ function ControlWeb() {
             //recoger el valor del input text
             //llamar al servidor usando rest
 
-            let nick = $("#nick").val();
-            if (nick) {
-                rest.agregarUsuario(nick);
+            let email = $("#email").val();
+            if (email) {
+                rest.agregarUsuario(email);
             }
             $("#mAU").remove();
         });
     };
 
     this.mostrarRegistro = function () {
-        if ($.cookie("nick")) {
+        if ($.cookie("email")) {
             return true;
         }
         $("#fmRegistro").remove();
@@ -55,7 +55,7 @@ function ControlWeb() {
     };
 
     this.mostrarLogin = function () {
-        if ($.cookie("nick")) {
+        if ($.cookie("email")) {
             return true;
         }
         $("#fmLogin").remove();
@@ -109,10 +109,10 @@ function ControlWeb() {
     };
 
     this.comprobarSesion = function () {
-        //let nick=localStorage.getItem("nick");
-        let nick = $.cookie("nick");
-        if (nick) {
-            cw.mostrarMsg("Bienvenido al sistema, " + nick);
+        //let email=localStorage.getItem("email");
+        let email = $.cookie("email");
+        if (email) {
+            cw.mostrarMsg("Bienvenido al sistema, " + email);
         } else {
             //cw.mostrarAgregarUsuario();
             cw.mostrarRegistro();
@@ -121,8 +121,8 @@ function ControlWeb() {
     };
 
     this.salir = function () {
-        //localStorage.removeItem("nick");
-        $.removeCookie("nick");
+        //localStorage.removeItem("email");
+        $.removeCookie("email");
         location.reload();
         rest.cerrarSesion();
     };
