@@ -149,6 +149,7 @@ function ClienteRest() {
                 if (data.email != -1) {
                     console.log("Usuario " + data.email + " ha sido registrado");
                     $.cookie("email", data.email);
+                    ws.email = data.email;
                     cw.limpiar();
                     cw.mostrarMsg("Bienvenido al sistema, " + data.email);
                     ///cw.mostrarLogin();

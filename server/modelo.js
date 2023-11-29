@@ -47,7 +47,8 @@ function Sistema(test) {
                     modelo.cad.insertarUsuario(obj, function (res) {
                         callback(res);
                     });
-                    correo.enviarEmail(obj.email, obj.key, "Confirmar cuenta");
+                    if(!modelo.test)
+                        correo.enviarEmail(obj.email, obj.key, "Confirmar cuenta");
                 });
             } else {
                 callback({ email: -1 });
@@ -176,6 +177,7 @@ module.exports.Sistema = Sistema;
 
 function Usuario(email) {
     this.email = email;
+    this.nombre;
     this.clave;
     this.password;
 }
@@ -183,4 +185,6 @@ function Usuario(email) {
 function Usuario(email, password) {
     this.email = email;
     this.password = password;
+    this.nombre;
+    this.clave;
 }
