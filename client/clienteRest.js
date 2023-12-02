@@ -129,7 +129,7 @@ function ClienteRest() {
                 } else {
                     console.log("Hay un usuario registrado con ese email");
                     cw.mostrarMensajeLogin("Hay un usuario registrado con ese email");
-                    cw.monstrarModal("Hay un usuario registrado con ese email");
+                    cw.monstrarModalLogin("Hay un usuario registrado con ese email");
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -152,11 +152,31 @@ function ClienteRest() {
                     ws.email = data.email;
                     cw.limpiar();
                     cw.mostrarMsg("Bienvenido al sistema, " + data.email);
-                    ///cw.mostrarLogin();
+                    cw.mostrarCatalog();
                 } else {
                     console.log("Usuario o clave incorrectos");
                     cw.mostrarMensajeLogin("Usuario o clave incorrectos");
-                    cw.monstrarModal("Usuario o clave incorrectos");
+                    cw.monstrarModalLogin("Usuario o clave incorrectos");
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            },
+            contentType: "application/json",
+        });
+    };
+
+    this.createNewBook = function (isbn, title, author, type) {
+        $.ajax({
+            type: "POST",
+            url: "/createNewBook",
+            data: JSON.stringify({ isbn: isbn, title: title, author: author, type: type }),
+            success: function (data) {
+                if (data.isbn != -1 && data.title != -1 && data.author != -1 && data.type != -1) {
+                    cw.mostrarMsg("A book has been added.");
+                } else {
+                    cw.mostrarMsg("Something went wrong. Please try again...");
                 }
             },
             error: function (xhr, textStatus, errorThrown) {

@@ -47,8 +47,12 @@ function Sistema(test) {
                     modelo.cad.insertarUsuario(obj, function (res) {
                         callback(res);
                     });
-                    if(!modelo.test)
-                        correo.enviarEmail(obj.email, obj.key, "Confirmar cuenta");
+                    if (!modelo.test)
+                        correo.enviarEmail(
+                            obj.email,
+                            obj.key,
+                            "Confirmar cuenta"
+                        );
                 });
             } else {
                 callback({ email: -1 });
@@ -77,6 +81,25 @@ function Sistema(test) {
                 }
             }
         );
+    };
+
+    this.createNewBook = function (obj, callback) {
+        let modelo = this;
+        /*if (!obj.email ) {
+            obj.email = obj.email;
+        }*/
+        this.cad.buscarBook(obj.isbn, function (book) {
+            if (!book) {
+                //el libro no existe, luego lo puedo registrar
+                obj.nbrClone = 1;
+                obj.available = true;
+                modelo.cad.insertarBook(obj, function (res) {
+                    callback(res);
+                });
+            } else {
+                callback({ isbn: -1 });
+            }
+        });
     };
 
     this.usuarioGoogle = function (usr, callback) {
@@ -175,16 +198,56 @@ function Sistema(test) {
 }
 module.exports.Sistema = Sistema;
 
+/*----------------Usuario----------------------*/
 function Usuario(email) {
     this.email = email;
+    this.password;
     this.nombre;
     this.clave;
-    this.password;
+    this.admin = false;
+    this.confirmada = false;
 }
-
 function Usuario(email, password) {
     this.email = email;
     this.password = password;
     this.nombre;
     this.clave;
+    this.admin = false;
+    this.confirmada = false;
+}
+
+/*----------------Book----------------------*/
+// Book Class Constructor
+function Book(isbn, title, author, type) {
+    this.isbn = isbn;
+    this.title = title;
+    this.author = author;
+    this.nbrClone = 1;
+    this.type = type;
+    this.available = true; // Assuming a new book is initially available
+}
+function Book(isbn, title, author, nbrClone, type) {
+    this.isbn = isbn;
+    this.title = title;
+    this.author = author;
+    this.nbrClone = nbrClone;
+    this.type = type;
+    this.available = true; // Assuming a new book is initially available
+}
+
+/*----------------Loan----------------------*/
+// Loan Class Constructor
+function Loan(userId, book, loanDate, dueDate) {
+    this.loanId = Date.now().toString();
+    this.userId = userId;
+    this.book = book;
+    this.loanDate = loanDate;
+    this.dueDate = dueDate;
+}
+function Loan(loanId, userId, book, loanDate, dueDate) {
+    this.loanId = loanId;
+    this.userId = userId;
+    this.book = book;
+    this.loanDate = loanDate;
+    this.dueDate = dueDate;
 }
