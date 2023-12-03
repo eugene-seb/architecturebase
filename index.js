@@ -183,12 +183,6 @@ app.post(
     })
 );
 
-app.post("/createNewBook", function (request, response) {
-    sistema.createNewBook(request.body, function (res) {
-        response.send({ isbn: res.isbn, title: res.title, author: res.author, type: res.type });
-    });
-});
-
 app.get("/cerrarSesion", haIniciado, function (request, response) {
     let email = request.user.email;
     request.logout();
@@ -197,3 +191,21 @@ app.get("/cerrarSesion", haIniciado, function (request, response) {
         sistema.eliminarUsuario(email);
     }
 });
+
+//------------------Book management--------------------------------------------------------
+
+app.post("/createNewBook", haIniciado, function (request, response) {
+    sistema.createNewBook(request.body, function (res) {
+        response.send({ isbn: res.isbn, title: res.title, author: res.author, type: res.type });
+    });
+});
+
+app.get("/getAllBooks", haIniciado, function (request, response) {
+    sistema.getAllBooks(function (res) {
+        response.send({ allBooks: res });
+    });
+});
+
+//------------------Book management--------------------------------------------------------
+
+

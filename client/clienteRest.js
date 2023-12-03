@@ -167,6 +167,14 @@ function ClienteRest() {
         });
     };
 
+    this.cerrarSesion = function () {
+        $.getJSON("/cerrarSesion", function () {
+            console.log("Sesión cerrada");
+            $.removeCookie("email");
+        });
+    };
+
+    //------------------Book management--------------------------------------------------------
     this.createNewBook = function (isbn, title, author, type) {
         $.ajax({
             type: "POST",
@@ -187,10 +195,24 @@ function ClienteRest() {
         });
     };
 
-    this.cerrarSesion = function () {
-        $.getJSON("/cerrarSesion", function () {
-            console.log("Sesión cerrada");
-            $.removeCookie("email");
+    this.getAllBooks = function () {
+        $.ajax({
+            type: "GET",
+            url: "/getAllBooks",
+            success: function (data) {
+                if (data.allBooks) {
+                    cw.mostrarMsg(data.allBooks[0].isbn);
+                } else {
+                    cw.mostrarMsg("no data.");
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            },
+            contentType: "application/json",
         });
     };
+    
+    //------------------Book management--------------------------------------------------------
 }

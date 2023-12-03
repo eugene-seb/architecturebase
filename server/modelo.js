@@ -98,7 +98,7 @@ function Sistema(test) {
                 obj.nbrClone = 1;
                 obj.available = true;
                 modelo.cad.insertarBook(obj, function (res) {
-                    modelo.getAllBooks();
+                    //modelo.getAllBooks(callback);
                     callback(res);
                 });
             } else {
@@ -107,7 +107,7 @@ function Sistema(test) {
         });
     };
 
-    this.getAllBooks = function () {
+    this.getAllBooks = function (callback) {
         let modelo = this;
 
         modelo.cad
@@ -115,6 +115,7 @@ function Sistema(test) {
             .then((result) => {
                 // Result is a list a of objects
                 this.books = result;
+                callback(this.books);
             })
             .catch((error) => console.error(error));
     };

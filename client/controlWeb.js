@@ -45,33 +45,6 @@ function ControlWeb() {
         });
     };
 
-    this.mostrarCatalog = function () {
-        $("#tbCatalog").remove();
-        $("#catalog").load("./client/catalog.html", function () {
-            
-            $("#btnCreateBook").on("click", function () {
-                cw.monstrarModalNewBook();
-            });
-            
-            $("#btnNewBook").on("click", function (e) {
-                e.preventDefault();
-
-                let isbn = $("#isbn").val();
-                let title = $("#title").val();
-                let author = $("#author").val();
-                let type = $("#type").val();
-
-                if (isbn && title && author && type) {
-                    rest.createNewBook(isbn, title, author, type);
-                } else {
-                    let msg = "Please fill the form correctly.";
-                    cw.mostrarMsg(msg);
-                }
-                $("#modalNewBook").modal("hide");
-            });
-        });
-    };
-
     function IsEmail(email) {
         var regex =
             /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -106,6 +79,7 @@ function ControlWeb() {
         //let email=localStorage.getItem("email");
         let email = $.cookie("email");
         if (email) {
+            cw.getAllBooks();
             cw.mostrarMsg("Bienvenido al sistema, " + email);
             cw.mostrarCatalog();
         } else {
@@ -147,7 +121,41 @@ function ControlWeb() {
         $("#myModal").modal();
     };
 
+    //------------------Book management--------------------------------------------------------
+
+    this.mostrarCatalog = function () {
+        $("#tbCatalog").remove();
+        $("#catalog").load("./client/catalog.html", function () {
+            $("#btnCreateBook").on("click", function () {
+                cw.monstrarModalNewBook();
+            });
+
+            $("#btnNewBook").on("click", function (e) {
+                e.preventDefault();
+
+                let isbn = $("#isbn").val();
+                let title = $("#title").val();
+                let author = $("#author").val();
+                let type = $("#type").val();
+
+                if (isbn && title && author && type) {
+                    rest.createNewBook(isbn, title, author, type);
+                } else {
+                    let msg = "Please fill the form correctly.";
+                    cw.mostrarMsg(msg);
+                }
+                $("#modalNewBook").modal("hide");
+            });
+        });
+    };
+
+    this.getAllBooks = function () {
+        rest.getAllBooks();
+    };
+
     this.monstrarModalNewBook = function () {
         $("#modalNewBook").modal();
     };
+
+    //------------------Book management--------------------------------------------------------
 }
