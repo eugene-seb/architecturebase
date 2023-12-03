@@ -1,31 +1,16 @@
-<div id="tbCatalog">    
+<div id="tbCatalog" style="height: 700px; overflow: auto;">    
     <div><button type="button" id="btnCreateBook" class="btn btn-outline-success">+ new Book</button></div>
     <br>
 
-    <table class="table">
+    <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">First</th>
+                <th scope="col">isbn</th>
+                <th scope="col">Title</th>
                 <th></th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>book 1</td>
-                <td><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>book 2</td>
-                <td><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td>book 3</td>
-                <td><button type="button" class="btn btn-danger">Delete</button></td>
-            </tr>
-        </tbody>
+        <tbody id="bodyCatalogBooks"></tbody>
     </table>
 </div>
