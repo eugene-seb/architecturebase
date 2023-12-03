@@ -1,35 +1,4 @@
 function ControlWeb() {
-    this.mostrarAgregarUsuario = function () {
-        //cada vez que se llame a este metodo, si esta dibujado que lo borre(para no tener varios)(si no esta dibujado no borra)
-        $("#bnv").remove();
-        $("#mAU").remove();
-        //guardamos el html en una variable
-        //usamos comillas simples para la cadena porque los atributos de las etiquetas usan comillas dobles
-        let cadena = '<div id="mAU" class="form-group">';
-        cadena = cadena + '<label for="email">Introduce el email:</label>';
-        cadena = cadena + '<input type="text" class="form-control" id="email">';
-        cadena =
-            cadena +
-            '<button id="btnAU" type="submit" class="btn btn-primary">Submit</button>';
-        cadena =
-            cadena +
-            '<div><a href="/auth/google"><img src="./client/img/btn_google_signin_dark_focus_web.png" style="height:40px;"></a></div>';
-        cadena = cadena + "</div>";
-
-        $("#au").append(cadena); //au = agregar usuario
-
-        $("#btnAU").on("click", function () {
-            //recoger el valor del input text
-            //llamar al servidor usando rest
-
-            let email = $("#email").val();
-            if (email) {
-                rest.agregarUsuario(email);
-            }
-            $("#mAU").remove();
-        });
-    };
-
     this.mostrarRegistro = function () {
         if ($.cookie("email")) {
             return true;
@@ -42,7 +11,6 @@ function ControlWeb() {
                 let pwd = $("#pwd").val();
                 if (IsEmail(email) && pwd) {
                     rest.registrarUsuario(email, pwd);
-                    console.log(email + " " + pwd);
                 } else {
                     let msg = "Bad credentials";
                     $("#msgModal").remove();
@@ -66,7 +34,6 @@ function ControlWeb() {
                 let pwd = $("#pwd").val();
                 if (IsEmail(email) && pwd) {
                     rest.loginUsuario(email, pwd);
-                    console.log(email + " " + pwd);
                 } else {
                     let msg = "Bad credentials";
                     $("#msgModal").remove();
@@ -112,10 +79,11 @@ function ControlWeb() {
         //let email=localStorage.getItem("email");
         let email = $.cookie("email");
         if (email) {
+            cw.getAllBooks();
             cw.mostrarMsg("Bienvenido al sistema, " + email);
+            cw.mostrarCatalog();
         } else {
-            //cw.mostrarAgregarUsuario();
-            cw.mostrarRegistro();
+            cw.mostrarLogin();
             cw.init();
         }
     };
@@ -135,8 +103,9 @@ function ControlWeb() {
 
     this.mostrarMsg = function (msg) {
         $("#mMsg").remove();
-        let cadena = '<h3 id="mMsg">' + msg + "</h3>";
-        $("#msg").append(cadena);
+        let message = '<p id="mMsg">' + msg + "</p>";
+        $("#bModalMessage").append(message);
+        $("#modalMessage").modal();
     };
 
     this.mostrarMensajeLogin = function (msg) {
@@ -145,10 +114,48 @@ function ControlWeb() {
         $("#msg").append(cadena);
     };
 
-    this.monstrarModal = function (msg) {
+    this.monstrarModalLogin = function (msg) {
         $("#msgModal").remove();
         let cadena = "<div id='msgModal'>" + msg + "</div>";
         $("#bModal").append(cadena);
         $("#myModal").modal();
     };
+
+    //------------------Book management--------------------------------------------------------
+
+    this.mostrarCatalog = function () {
+        $("#tbCatalog").remove();
+        $("#catalog").load("./client/catalog.html", function () {
+            $("#btnCreateBook").on("click", function () {
+                cw.monstrarModalNewBook();
+            });
+
+            $("#btnNewBook").on("click", function (e) {
+                e.preventDefault();
+
+                let isbn = $("#isbn").val();
+                let title = $("#title").val();
+                let author = $("#author").val();
+                let type = $("#type").val();
+
+                if (isbn && title && author && type) {
+                    rest.createNewBook(isbn, title, author, type);
+                } else {
+                    let msg = "Please fill the form correctly.";
+                    cw.mostrarMsg(msg);
+                }
+                $("#modalNewBook").modal("hide");
+            });
+        });
+    };
+
+    this.getAllBooks = function () {
+        rest.getAllBooks();
+    };
+
+    this.monstrarModalNewBook = function () {
+        $("#modalNewBook").modal();
+    };
+
+    //------------------Book management--------------------------------------------------------
 }

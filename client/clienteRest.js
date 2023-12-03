@@ -62,7 +62,9 @@ function ClienteRest() {
             if (data.res == email) {
                 console.log("El usuario " + email + " ha sido eliminado");
             } else {
-                console.log("El usuario " + email + " no se ha podido eliminar");
+                console.log(
+                    "El usuario " + email + " no se ha podido eliminar"
+                );
             }
         });
     };
@@ -94,7 +96,9 @@ function ClienteRest() {
             success: function (data) {
                 let msg = "El email " + email + " está ocupado";
                 if (data.email != -1) {
-                    console.log("Usuario " + data.email + " ha sido registrado");
+                    console.log(
+                        "Usuario " + data.email + " ha sido registrado"
+                    );
                     msg = "Bienvenido al sistema, " + data.email;
                     $.cookie("email", data.email);
                 } else {
@@ -120,7 +124,9 @@ function ClienteRest() {
             data: JSON.stringify({ email: email, password: password }),
             success: function (data) {
                 if (data.email != -1) {
-                    console.log("Usuario " + data.email + " ha sido registrado");
+                    console.log(
+                        "Usuario " + data.email + " ha sido registrado"
+                    );
                     // mostrar un mensaje diciendo: consulta tu email
                     //$.cookie("email",data.email);
                     cw.limpiar();
@@ -128,8 +134,12 @@ function ClienteRest() {
                     cw.mostrarLogin();
                 } else {
                     console.log("Hay un usuario registrado con ese email");
-                    cw.mostrarMensajeLogin("Hay un usuario registrado con ese email");
-                    cw.monstrarModal("Hay un usuario registrado con ese email");
+                    cw.mostrarMensajeLogin(
+                        "Hay un usuario registrado con ese email"
+                    );
+                    cw.monstrarModalLogin(
+                        "Hay un usuario registrado con ese email"
+                    );
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -147,15 +157,18 @@ function ClienteRest() {
             data: JSON.stringify({ email: email, password: password }),
             success: function (data) {
                 if (data.email != -1) {
-                    console.log("Usuario " + data.email + " ha sido registrado");
+                    console.log(
+                        "Usuario " + data.email + " ha sido registrado"
+                    );
                     $.cookie("email", data.email);
+                    ws.email = data.email;
                     cw.limpiar();
                     cw.mostrarMsg("Bienvenido al sistema, " + data.email);
-                    ///cw.mostrarLogin();
+                    cw.mostrarCatalog();
                 } else {
                     console.log("Usuario o clave incorrectos");
                     cw.mostrarMensajeLogin("Usuario o clave incorrectos");
-                    cw.monstrarModal("Usuario o clave incorrectos");
+                    cw.monstrarModalLogin("Usuario o clave incorrectos");
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -172,4 +185,76 @@ function ClienteRest() {
             $.removeCookie("email");
         });
     };
+
+    //------------------Book management--------------------------------------------------------
+    this.createNewBook = function (isbn, title, author, type) {
+        $.ajax({
+            type: "POST",
+            url: "/createNewBook",
+            data: JSON.stringify({
+                isbn: isbn,
+                title: title,
+                author: author,
+                type: type,
+            }),
+            success: function (data) {
+                if (
+                    data.isbn != -1 &&
+                    data.title != -1 &&
+                    data.author != -1 &&
+                    data.type != -1
+                ) {
+                    cw.mostrarMsg("A book has been added.");
+                } else {
+                    cw.mostrarMsg(
+                        "Something went wrong. Please try again...\nThe book you are trying to add may already exists."
+                    );
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            },
+            contentType: "application/json",
+        });
+    };
+
+    this.getAllBooks = function () {
+        $.ajax({
+            type: "GET",
+            url: "/getAllBooks",
+            success: function (data) {
+                if (data.allBooks) {
+                    let index = 1;
+                    let bodyCatalog = "";
+
+                    // Iterate through all elements of the array
+                    for (let book of data.allBooks) {
+                        console.log(book);
+
+                        bodyCatalogBooks =
+                            '<tr><th scope="row">' +
+                            index +
+                            "</th><td>" +
+                            book.isbn +
+                            "</td><td>" +
+                            book.title +
+                            '</td><td><button type="button" id="' + book.isbn + '" class="btn btn-outline-warning">+&nbsp;Loan</button></td></tr>';
+
+                        $("#bodyCatalogBooks").append(bodyCatalogBooks);
+                        index++;
+                    }
+                } else {
+                    cw.mostrarMsg("no data.");
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            },
+            contentType: "application/json",
+        });
+    };
+
+    //------------------Book management--------------------------------------------------------
 }

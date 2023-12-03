@@ -48,7 +48,8 @@ function Sistema(test) {
                     modelo.cad.insertarUsuario(obj, function (res) {
                         callback(res);
                     });
-                    //correo.enviarEmail(obj.email, obj.key, "Confirmar cuenta");
+                    if(!modelo.test)
+                        correo.enviarEmail(obj.email, obj.key, "Confirmar cuenta");
                 });
             } else {
                 callback({ email: -1 });
@@ -189,12 +190,14 @@ function Sistema(test) {
     }
 
     this.crearPartida = function (email) {
+        let codigo = -1
         if (email in this.usuarios) {
-            let codigo = obtenerCodigo();
+            codigo = obtenerCodigo();
             let partida = new Partida(codigo);
             partida.agregarJugador(this.usuarios[email]);
             this.partidas.push(partida);
         }
+        return codigo;
     };
 
     this.unirAPartida = function (email) {
