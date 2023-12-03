@@ -4,6 +4,8 @@ const datos = require("./cad.js");
 
 function Sistema(test) {
     this.usuarios = {};
+    this.books = {};
+    this.loans = {};
     this.test = test;
     this.cad = new datos.CAD();
 
@@ -83,17 +85,20 @@ function Sistema(test) {
         );
     };
 
+    //------------------Book management--------------------------------------------------------
+
     this.createNewBook = function (obj, callback) {
         let modelo = this;
         /*if (!obj.email ) {
             obj.email = obj.email;
         }*/
-        this.cad.buscarBook(obj.isbn, function (book) {
+        this.cad.buscarBook({ isbn: obj.isbn }, function (book) {
             if (!book) {
                 //el libro no existe, luego lo puedo registrar
                 obj.nbrClone = 1;
                 obj.available = true;
                 modelo.cad.insertarBook(obj, function (res) {
+                    modelo.getAllBooks();
                     callback(res);
                 });
             } else {
@@ -101,6 +106,20 @@ function Sistema(test) {
             }
         });
     };
+
+    this.getAllBooks = function () {
+        let modelo = this;
+
+        modelo.cad
+            .getAllBooks()
+            .then((result) => {
+                // Result is a list a of objects
+                this.books = result;
+            })
+            .catch((error) => console.error(error));
+    };
+
+    //------------------Book management--------------------------------------------------------
 
     this.usuarioGoogle = function (usr, callback) {
         this.cad.buscarOCrearUsuario(usr, function (res) {

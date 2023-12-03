@@ -176,7 +176,7 @@ function ClienteRest() {
                 if (data.isbn != -1 && data.title != -1 && data.author != -1 && data.type != -1) {
                     cw.mostrarMsg("A book has been added.");
                 } else {
-                    cw.mostrarMsg("Something went wrong. Please try again...");
+                    cw.mostrarMsg("Something went wrong. Please try again...\nThe book you are trying to add may already exists.");
                 }
             },
             error: function (xhr, textStatus, errorThrown) {

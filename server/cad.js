@@ -28,16 +28,8 @@ function CAD() {
         buscar(this.usuarios, criterio, callback);
     };
 
-    this.buscarBook = function (criterio, callback) {
-        buscarBooks(this.books, criterio, callback);
-    };
-
     this.insertarUsuario = function (usuario, callback) {
         insertar(this.usuarios, usuario, callback);
-    };
-
-    this.insertarBook = function (book, callback) {
-        insertarNewBook(this.usuarios, book, callback);
     };
 
     this.actualizarUsuario = function (obj, callback) {
@@ -100,33 +92,12 @@ function CAD() {
         });
     }
 
-    function buscarBooks(coleccion, criterio, callback) {
-        coleccion.find(criterio).toArray(function (error, books) {
-            if (books.length == 0) {
-                callback(undefined);
-            } else {
-                callback(books[0]);
-            }
-        });
-    }
-    
     function insertar(coleccion, elemento, callback) {
         coleccion.insertOne(elemento, function (err, result) {
             if (err) {
                 console.log("error");
             } else {
                 console.log("Nuevo elemento creado");
-                callback(elemento);
-            }
-        });
-    }
-
-    function insertarNewBook(coleccion, elemento, callback) {
-        coleccion.insertOne(elemento, function (err, result) {
-            if (err) {
-                console.log("An error occur while creating the book.");
-            } else {
-                console.log("New book added");
                 callback(elemento);
             }
         });
@@ -153,5 +124,51 @@ function CAD() {
             }
         );
     }
+
+    //------------------Book management--------------------------------------------------------
+
+    this.buscarBook = function (criterio, callback) {
+        buscarBooks(this.books, criterio, callback);
+    };
+    this.insertarBook = function (book, callback) {
+        insertarNewBook(this.books, book, callback);
+    };
+
+    function buscarBooks(coleccion, criterio, callback) {
+        coleccion.find(criterio).toArray(function (error, books) {
+            if (books.length == 0) {
+                callback(undefined);
+            } else {
+                callback(books[0]);
+            }
+        });
+    }
+
+    function insertarNewBook(coleccion, elemento, callback) {
+        coleccion.insertOne(elemento, function (err, result) {
+            if (err) {
+                console.log("An error occur while creating the book.");
+            } else {
+                console.log("New book added");
+                callback(elemento);
+            }
+        });
+    }
+
+    /**
+     * Return a list of objects Book
+     * 
+     * @returns 
+     */
+    this.getAllBooks = async function() {
+        // Find all documents in the collection
+        const cursor = this.books.find();
+
+        // Convert the cursor to an array of documents
+        const documents = await cursor.toArray();
+
+        return documents;
+    }
+    //------------------Book management--------------------------------------------------------
 }
 module.exports.CAD = CAD;
