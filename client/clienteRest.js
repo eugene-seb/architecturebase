@@ -230,7 +230,6 @@ function ClienteRest() {
 
                     // Iterate through all elements of the array
                     for (let book of data.allBooks) {
-                        console.log(book);
 
                         bodyCatalogBooks =
                             '<tr><th scope="row">' +

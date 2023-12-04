@@ -79,7 +79,6 @@ function ControlWeb() {
         //let email=localStorage.getItem("email");
         let email = $.cookie("email");
         if (email) {
-            cw.getAllBooks();
             cw.mostrarMsg("Bienvenido al sistema, " + email);
             cw.mostrarCatalog();
         } else {
@@ -126,6 +125,9 @@ function ControlWeb() {
     this.mostrarCatalog = function () {
         $("#tbCatalog").remove();
         $("#catalog").load("./client/catalog.html", function () {
+            
+            cw.getAllBooks();
+            
             $("#btnCreateBook").on("click", function () {
                 cw.monstrarModalNewBook();
             });
@@ -141,6 +143,7 @@ function ControlWeb() {
                 if (isbn && title && author && type) {
                     rest.createNewBook(isbn, title, author, type);
                 } else {
+                    cw.getAllBooks();
                     let msg = "Please fill the form correctly.";
                     cw.mostrarMsg(msg);
                 }
