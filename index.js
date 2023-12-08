@@ -13,7 +13,6 @@ require("./server/passport-setup.js");
 const modelo = require("./server/modelo.js");
 const PORT = process.env.PORT || 3000;
 
-
 let test = false;
 test = eval(args[0]); //test=true
 let sistema = new modelo.Sistema(test);
@@ -27,7 +26,6 @@ httpServer.listen(PORT, () => {
 });
 io.listen(httpServer);
 ws.lanzarServidor(io, sistema);
-
 
 app.use(
     express.static(__dirname + "/"),
@@ -54,7 +52,6 @@ passport.use(
         }
     )
 );
-
 
 const haIniciado = function (request, response, next) {
     if (request.user) {
@@ -194,18 +191,56 @@ app.get("/cerrarSesion", haIniciado, function (request, response) {
 
 //------------------Book management--------------------------------------------------------
 
-app.post("/createNewBook", haIniciado, function (request, response) {
-    sistema.createNewBook(request.body, function (res) {
-        response.send({ isbn: res.isbn, title: res.title, author: res.author, type: res.type });
-    });
-});
+app.post(
+    "/createNewBook",
+    /*haIniciado,*/ function (request, response) {
+        sistema.createNewBook(request.body, function (res) {
+            response.send({
+                isbn: res.isbn,
+                title: res.title,
+                author: res.author,
+                type: res.type,
+            });
+        });
+    }
+);
 
-app.get("/getAllBooks", haIniciado, function (request, response) {
-    sistema.getAllBooks(function (res) {
-        response.send({ allBooks: res });
-    });
-});
+app.get(
+    "/getAllBooks",
+    /*haIniciado,*/ function (request, response) {
+        sistema.getAllBooks(function (res) {
+            response.send({ allBooks: res });
+        });
+    }
+);
 
 //------------------Book management--------------------------------------------------------
 
+//------------------Loan management--------------------------------------------------------
 
+app.post(
+    "/createNewLoan",
+    /*haIniciado,*/ function (request, response) {
+        sistema.createNewLoan(request.body, function (res) {
+            response.send({
+                loanId: res.loanId,
+                userId: res.userId,
+                isbn: res.isbn,
+                title: res.title,
+                loanDate: res.loanDate,
+                returnDate: res.returnDate,
+            });
+        });
+    }
+);
+
+app.get(
+    "/getAllLoans",
+    /*haIniciado,*/ function (request, response) {
+        sistema.getAllLoans(function (res) {
+            response.send({ allLoans: res });
+        });
+    }
+);
+
+//------------------Loan management--------------------------------------------------------

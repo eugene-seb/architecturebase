@@ -79,8 +79,8 @@ function ControlWeb() {
         //let email=localStorage.getItem("email");
         let email = $.cookie("email");
         if (email) {
-            cw.mostrarMsg("Bienvenido al sistema, " + email);
             cw.mostrarCatalog();
+            cw.mostrarLoan();
         } else {
             cw.mostrarLogin();
             cw.init();
@@ -127,7 +127,7 @@ function ControlWeb() {
         $("#catalog").load("./client/catalog.html", function () {
             
             cw.getAllBooks();
-            
+
             $("#btnCreateBook").on("click", function () {
                 cw.monstrarModalNewBook();
             });
@@ -161,4 +161,44 @@ function ControlWeb() {
     };
 
     //------------------Book management--------------------------------------------------------
+
+    //------------------Loan management--------------------------------------------------------
+
+    this.monstrarModalNewLoan = function (book) {
+        
+        $('#' + book.isbn).on("click", function () {
+            $("#modalNewLoan").modal();
+        });
+
+        // Create new loan
+        $("#btnNewLoan").on("click", function (e) {
+            e.preventDefault();
+
+            let returnDate = $("#returnDate").val();
+
+            if (returnDate) {
+                let userId = $.cookie("email");
+                rest.createNewLoan(userId, book, returnDate);
+            } else {
+                cw.getAllLoans();
+                let msg = "Please choose a good date.";
+                cw.mostrarMsg(msg);
+            }
+            $("#modalNewLoan").modal("hide");
+        });
+    };
+
+    this.mostrarLoan = function () {
+        $("#tbLoan").remove();
+        $("#loan").load("./client/loan.html", function () {
+            
+            cw.getAllLoans();
+
+        });
+    }
+
+    this.getAllLoans = function () {
+        rest.getAllLoans();
+    };
+    //------------------Loan management--------------------------------------------------------
 }

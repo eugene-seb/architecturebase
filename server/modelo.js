@@ -43,6 +43,7 @@ function Sistema(test) {
             if (!usr) {
                 //el usuario no existe, luego lo puedo registrar
                 obj.key = Date.now().toString();
+                obj.admin = false;
                 obj.confirmada = false;
                 bcrypt.hash(obj.password, 10, function (err, hash) {
                     obj.password = hash;
@@ -84,43 +85,6 @@ function Sistema(test) {
             }
         );
     };
-
-    //------------------Book management--------------------------------------------------------
-
-    this.createNewBook = function (obj, callback) {
-        let modelo = this;
-        /*if (!obj.email ) {
-            obj.email = obj.email;
-        }*/
-        this.cad.buscarBook({ isbn: obj.isbn }, function (book) {
-            if (!book) {
-                //el libro no existe, luego lo puedo registrar
-                obj.nbrClone = 1;
-                obj.available = true;
-                modelo.cad.insertarBook(obj, function (res) {
-                    //modelo.getAllBooks(callback);
-                    callback(res);
-                });
-            } else {
-                callback({ isbn: -1 });
-            }
-        });
-    };
-
-    this.getAllBooks = function (callback) {
-        let modelo = this;
-
-        modelo.cad
-            .getAllBooks()
-            .then((result) => {
-                // Result is a list a of objects
-                this.books = result;
-                callback(this.books);
-            })
-            .catch((error) => console.error(error));
-    };
-
-    //------------------Book management--------------------------------------------------------
 
     this.usuarioGoogle = function (usr, callback) {
         this.cad.buscarOCrearUsuario(usr, function (res) {
@@ -215,6 +179,75 @@ function Sistema(test) {
         let res = { num: Object.keys(this.usuarios).length };
         return res;
     };
+
+    //------------------Book management--------------------------------------------------------
+
+    this.createNewBook = function (obj, callback) {
+        let modelo = this;
+        /*if (!obj.email ) {
+                obj.email = obj.email;
+            }*/
+        this.cad.buscarBook({ isbn: obj.isbn }, function (book) {
+            if (!book) {
+                //el libro no existe, luego lo puedo registrar
+                obj.nbrClone = 1;
+                obj.available = true;
+                modelo.cad.insertarBook(obj, function (res) {
+                    //modelo.getAllBooks(callback);
+                    callback(res);
+                });
+            } else {
+                callback({ isbn: -1 });
+            }
+        });
+    };
+
+    this.getAllBooks = function (callback) {
+        let modelo = this;
+
+        modelo.cad
+            .getAllBooks()
+            .then((result) => {
+                // Result is a list a of objects
+                this.books = result;
+                callback(this.books);
+            })
+            .catch((error) => console.error(error));
+    };
+
+    //------------------Book management--------------------------------------------------------
+
+    //------------------Loan management--------------------------------------------------------
+
+    this.createNewLoan = function (obj, callback) {
+        let modelo = this;
+        this.cad.buscarLoan({ loanId: obj.loanId }, function (loan) {
+            if (!loan) {
+                //el libro no existe, luego lo puedo registrar
+                modelo.cad.insertarLoan(obj, function (res) {
+                    //modelo.getAllBooks(callback);
+                    callback(res);
+                });
+            } else {
+                callback({ loanId: -1 });
+            }
+        });
+    };
+
+    this.getAllLoans = function (callback) {
+        let modelo = this;
+
+        modelo.cad
+            .getAllLoans()
+            .then((result) => {
+                // Result is a list a of objects
+                this.loans = result;
+                callback(this.loans);
+            })
+            .catch((error) => console.error(error));
+    };
+
+    //------------------Loan management--------------------------------------------------------
 }
 module.exports.Sistema = Sistema;
 
@@ -223,7 +256,7 @@ function Usuario(email) {
     this.email = email;
     this.password;
     this.nombre;
-    this.clave;
+    this.key;
     this.admin = false;
     this.confirmada = false;
 }
@@ -231,7 +264,7 @@ function Usuario(email, password) {
     this.email = email;
     this.password = password;
     this.nombre;
-    this.clave;
+    this.key;
     this.admin = false;
     this.confirmada = false;
 }
@@ -257,17 +290,11 @@ function Book(isbn, title, author, nbrClone, type) {
 
 /*----------------Loan----------------------*/
 // Loan Class Constructor
-function Loan(userId, book, loanDate, dueDate) {
-    this.loanId = Date.now().toString();
+function Loan(userId, bookId, title, loanDate, returnDate) {
+    this.loanId = userId + bookId;
     this.userId = userId;
-    this.book = book;
+    this.bookId = bookId;
+    this.title = title,
     this.loanDate = loanDate;
-    this.dueDate = dueDate;
-}
-function Loan(loanId, userId, book, loanDate, dueDate) {
-    this.loanId = loanId;
-    this.userId = userId;
-    this.book = book;
-    this.loanDate = loanDate;
-    this.dueDate = dueDate;
+    this.returnDate = returnDate;
 }
