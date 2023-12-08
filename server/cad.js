@@ -157,10 +157,10 @@ function CAD() {
 
     /**
      * Return a list of objects Book
-     * 
-     * @returns 
+     *
+     * @returns
      */
-    this.getAllBooks = async function() {
+    this.getAllBooks = async function () {
         // Find all documents in the collection
         const cursor = this.books.find();
 
@@ -168,7 +168,7 @@ function CAD() {
         const documents = await cursor.toArray();
 
         return documents;
-    }
+    };
     //------------------Book management--------------------------------------------------------
 
     //------------------Loan management--------------------------------------------------------
@@ -197,16 +197,16 @@ function CAD() {
             } else {
                 console.log("New loan added");
                 callback(elemento);
-            }  
+            }
         });
     }
 
     /**
-     * Return a list of objects Book
-     * 
-     * @returns 
+     * Return a list of objects Loan
+     *
+     * @returns
      */
-    this.getAllLoans = async function() {
+    this.getAllLoans = async function () {
         // Find all documents in the collection
         const cursor = this.loans.find();
 
@@ -214,7 +214,23 @@ function CAD() {
         const documents = await cursor.toArray();
 
         return documents;
-    }
+    };
+
+    /**
+     *
+     * @param {*} userId
+     * @returns
+     */
+    this.getLoansByUser = async function (userId) {
+        // Find documents in the collection where userId matches
+        const cursor = this.loans.find({ userId: userId });
+
+        // Convert the cursor to an array of documents
+        const documents = await cursor.toArray();
+
+        return documents;
+    };
+
     //------------------Loan management--------------------------------------------------------
 }
 module.exports.CAD = CAD;

@@ -243,4 +243,13 @@ app.get(
     }
 );
 
+app.post(
+    "/getLoansByUser",
+    /*haIniciado,*/ function (request, response) {
+        sistema.getLoansByUser(request.body, function (res) {
+            response.send({ allLoans: res });
+        });
+    }
+);
+
 //------------------Loan management--------------------------------------------------------

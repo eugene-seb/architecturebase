@@ -164,7 +164,7 @@ function ClienteRest() {
                     ws.email = data.email;
                     cw.limpiar();
                     cw.mostrarMsg("Bienvenido al sistema, " + data.email);
-                    cw.mostrarLoan();
+                    cw.mostrarLoanOfUser();
                     cw.mostrarCatalog();
                 } else {
                     console.log("Usuario o clave incorrectos");
@@ -327,6 +327,46 @@ function ClienteRest() {
         $.ajax({
             type: "GET",
             url: "/getAllLoans",
+            success: function (data) {
+                if (data.allLoans) {
+                    let index = 1;
+                    let lineLoan = "";
+
+                    // Iterate through all elements of the array
+                    for (let loan of data.allLoans) {
+                        lineLoan =
+                            '<tr><th scope="row">' +
+                            index +
+                            "</th><td>" +
+                            loan.isbn +
+                            "</td><td>" +
+                            loan.title +
+                            '</td><td><button type="button" id="' +
+                            loan.loanId +
+                            '" class="btn btn-outline-danger">-&nbsp;Return</button></td></tr>';
+
+                        $("#bodyCatalogLoans").append(lineLoan);
+                        index++;
+                    }
+                } else {
+                    cw.mostrarMsg("no data.");
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            },
+            contentType: "application/json",
+        });
+    };
+    
+    this.getLoansByUser = function (userId) {
+        $.ajax({
+            type: "POST",
+            url: "/getLoansByUser",
+            data: JSON.stringify({
+                userId: userId,
+            }),
             success: function (data) {
                 if (data.allLoans) {
                     let index = 1;

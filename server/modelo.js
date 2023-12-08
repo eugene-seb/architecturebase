@@ -247,6 +247,19 @@ function Sistema(test) {
             .catch((error) => console.error(error));
     };
 
+    this.getLoansByUser = function (obj, callback) {
+        let modelo = this;
+
+        modelo.cad
+            .getLoansByUser(obj.userId)
+            .then((result) => {
+                // Result is a list a of objects
+                this.loans = result;
+                callback(this.loans);
+            })
+            .catch((error) => console.error(error));
+    };
+
     //------------------Loan management--------------------------------------------------------
 }
 module.exports.Sistema = Sistema;

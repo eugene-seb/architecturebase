@@ -80,7 +80,7 @@ function ControlWeb() {
         let email = $.cookie("email");
         if (email) {
             cw.mostrarCatalog();
-            cw.mostrarLoan();
+            cw.mostrarLoanOfUser(email);
         } else {
             cw.mostrarLogin();
             cw.init();
@@ -125,7 +125,6 @@ function ControlWeb() {
     this.mostrarCatalog = function () {
         $("#tbCatalog").remove();
         $("#catalog").load("./client/catalog.html", function () {
-            
             cw.getAllBooks();
 
             $("#btnCreateBook").on("click", function () {
@@ -165,40 +164,48 @@ function ControlWeb() {
     //------------------Loan management--------------------------------------------------------
 
     this.monstrarModalNewLoan = function (book) {
-        
-        $('#' + book.isbn).on("click", function () {
+        $("#" + book.isbn).on("click", function () {
             $("#modalNewLoan").modal();
-        });
 
-        // Create new loan
-        $("#btnNewLoan").on("click", function (e) {
-            e.preventDefault();
+            // Create new loan
+            $("#btnNewLoan").on("click", function (e) {
+                e.preventDefault();
 
-            let returnDate = $("#returnDate").val();
+                let returnDate = $("#returnDate").val();
 
-            if (returnDate) {
-                let userId = $.cookie("email");
-                rest.createNewLoan(userId, book, returnDate);
-            } else {
-                cw.getAllLoans();
-                let msg = "Please choose a good date.";
-                cw.mostrarMsg(msg);
-            }
-            $("#modalNewLoan").modal("hide");
+                if (returnDate) {
+                    let userId = $.cookie("email");
+                    rest.createNewLoan(userId, book, returnDate);
+                } else {
+                    cw.getAllLoans();
+                    let msg = "Please choose a good date.";
+                    cw.mostrarMsg(msg);
+                }
+                $("#modalNewLoan").modal("hide");
+            });
         });
     };
 
     this.mostrarLoan = function () {
         $("#tbLoan").remove();
         $("#loan").load("./client/loan.html", function () {
-            
             cw.getAllLoans();
-
         });
-    }
+    };
+    
+    this.mostrarLoanOfUser = function (userId) {
+        $("#tbLoan").remove();
+        $("#loan").load("./client/loan.html", function () {
+            cw.getLoansByUser(userId);
+        });
+    };
 
     this.getAllLoans = function () {
         rest.getAllLoans();
+    };
+    
+    this.getLoansByUser = function (userId) {
+        rest.getLoansByUser(userId);
     };
     //------------------Loan management--------------------------------------------------------
 }
