@@ -260,6 +260,17 @@ function Sistema(test) {
             .catch((error) => console.error(error));
     };
 
+    this.returnBook = function (obj, callback) {
+        let modelo = this;
+
+        modelo.cad
+            .returnBook(obj.loanId)
+            .then((result) => {
+                callback(result);
+            })
+            .catch((error) => console.error(error));
+    };
+
     //------------------Loan management--------------------------------------------------------
 }
 module.exports.Sistema = Sistema;

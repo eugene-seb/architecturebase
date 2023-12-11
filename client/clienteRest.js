@@ -385,11 +385,34 @@ function ClienteRest() {
                             loan.loanId +
                             '" class="btn btn-outline-danger">-&nbsp;Return</button></td></tr>';
 
+                        cw.returnBook(loan);
                         $("#bodyCatalogLoans").append(lineLoan);
                         index++;
                     }
                 } else {
                     cw.mostrarMsg("no data.");
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            },
+            contentType: "application/json",
+        });
+    };
+
+    this.returnBook = function (loanId) {
+        $.ajax({
+            type: "POST",
+            url: "/returnBook",
+            data: JSON.stringify({
+                loanId: loanId,
+            }),
+            success: function (data) {
+                if (data.result) {
+                    cw.mostrarMsg("The book has been returned.");
+                } else {
+                    cw.mostrarMsg("no loan corresponds.");
                 }
             },
             error: function (xhr, textStatus, errorThrown) {

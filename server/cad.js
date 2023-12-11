@@ -231,6 +231,22 @@ function CAD() {
         return documents;
     };
 
+    this.returnBook = async function (loanId) {
+        // Delete the document from the collection where loanId matches
+        const result = await this.loans.deleteOne({ loanId: loanId });
+
+        // Check the result to see if the deletion was successful
+        if (result.deletedCount === 1) {
+            console.log(
+                `Loan with ID ${loanId} has been successfully removed.`
+            );
+            return true; // Indicate success
+        } else {
+            console.log(`Loan with ID ${loanId} not found.`);
+            return false; // Indicate failure
+        }
+    };
+
     //------------------Loan management--------------------------------------------------------
 }
 module.exports.CAD = CAD;

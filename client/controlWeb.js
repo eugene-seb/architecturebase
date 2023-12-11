@@ -186,13 +186,19 @@ function ControlWeb() {
         });
     };
 
+    this.returnBook = function (loan) {
+        $("#" + loan.loanId).on("click", function () {
+            rest.returnBook(loan.loanId);
+        });
+    };
+
     this.mostrarLoan = function () {
         $("#tbLoan").remove();
         $("#loan").load("./client/loan.html", function () {
             cw.getAllLoans();
         });
     };
-    
+
     this.mostrarLoanOfUser = function (userId) {
         $("#tbLoan").remove();
         $("#loan").load("./client/loan.html", function () {
@@ -203,7 +209,7 @@ function ControlWeb() {
     this.getAllLoans = function () {
         rest.getAllLoans();
     };
-    
+
     this.getLoansByUser = function (userId) {
         rest.getLoansByUser(userId);
     };

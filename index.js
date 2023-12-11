@@ -252,4 +252,13 @@ app.post(
     }
 );
 
+app.post(
+    "/returnBook",
+    /*haIniciado,*/ function (request, response) {
+        sistema.returnBook(request.body, function (res) {
+            response.send({ result: res });
+        });
+    }
+);
+
 //------------------Loan management--------------------------------------------------------
