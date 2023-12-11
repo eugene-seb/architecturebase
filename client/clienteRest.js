@@ -105,6 +105,8 @@ function ClienteRest() {
                     console.log("El email ya está ocupado");
                 }
                 cw.limpiar();
+                cw.mostrarCatalog();
+                cw.mostrarLoanOfUser($.cookie("email"));
                 cw.mostrarMsg(msg);
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -187,6 +189,18 @@ function ClienteRest() {
         });
     };
 
+    /**
+     * Replace any character that is not a word character by '0'
+     * @param {*} inputString
+     * @returns
+     */
+    function replaceSpecialCharacters(inputString) {
+        // Use a regular expression to replace any special character with '0'
+        const resultString = inputString.replace(/[^\w\s]/gi, "0");
+
+        return resultString;
+    }
+
     //------------------Book management--------------------------------------------------------
     this.createNewBook = function (isbn, title, author, type) {
         $.ajax({
@@ -205,7 +219,6 @@ function ClienteRest() {
                     data.author != -1 &&
                     data.type != -1
                 ) {
-
                     let lineCatalogBooks =
                         '<tr><th scope="row">' +
                         0 +
@@ -278,7 +291,7 @@ function ClienteRest() {
     //------------------Loan management--------------------------------------------------------
 
     this.createNewLoan = function (userId, book, returnDate) {
-        let loanId = userId + book.isbn;
+        let loanId = replaceSpecialCharacters(userId + book.isbn);
 
         $.ajax({
             type: "POST",
@@ -293,22 +306,21 @@ function ClienteRest() {
             }),
             success: function (data) {
                 if (data.loanId != -1 && data.isbn != -1 && data.title != -1) {
-
                     let lineLoan =
-                            '<tr><th scope="row">' +
-                            0 +
-                            "</th><td>" +
-                            data.isbn +
-                            "</td><td>" +
-                            data.title +
-                            '</td><td><button type="button" id="' +
-                            data.loanId +
-                            '" class="btn btn-outline-danger">-&nbsp;Return</button></td></tr>';
+                        '<tr><th scope="row">' +
+                        0 +
+                        "</th><td>" +
+                        data.isbn +
+                        "</td><td>" +
+                        data.title +
+                        '</td><td><button type="button" id="' +
+                        data.loanId +
+                        '" class="btn btn-outline-danger">-&nbsp;Return</button></td></tr>';
 
-                        $("#bodyCatalogLoans").append(lineLoan);
+                    $("#bodyCatalogLoans").append(lineLoan);
+                    cw.returnBook(data);
 
                     cw.mostrarMsg("A loan has been added.");
-
                 } else {
                     cw.mostrarMsg(
                         "Something went wrong. Please try again...\nThe loan you are trying to add may already exists."
@@ -347,6 +359,7 @@ function ClienteRest() {
 
                         $("#bodyCatalogLoans").append(lineLoan);
                         index++;
+                        cw.returnBook(loan);
                     }
                 } else {
                     cw.mostrarMsg("no data.");
@@ -359,7 +372,7 @@ function ClienteRest() {
             contentType: "application/json",
         });
     };
-    
+
     this.getLoansByUser = function (userId) {
         $.ajax({
             type: "POST",
@@ -385,9 +398,9 @@ function ClienteRest() {
                             loan.loanId +
                             '" class="btn btn-outline-danger">-&nbsp;Return</button></td></tr>';
 
-                        cw.returnBook(loan);
                         $("#bodyCatalogLoans").append(lineLoan);
                         index++;
+                        cw.returnBook(loan);
                     }
                 } else {
                     cw.mostrarMsg("no data.");
