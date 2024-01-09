@@ -1,13 +1,28 @@
 const nodemailer = require("nodemailer"); // npm install nodemailer
+const gv = require('./gestorVariables.js')
 const url = "http://localhost:3000/";
 
-const transporter = nodemailer.createTransport({
+let options = {
+    user: "tu-correo@gmail.com",
+    pass: "" // clave secreta
+
+}
+let transporter;
+gv.obtenerOptions(function(res){
+options = res;
+transporter = nodemailer.createTransport({
+service: 'gmail',
+auth: options
+});
+});
+/*
+const transporter =     nodemailer.createTransport({
     service: "gmail",
     auth: {
         user: "azertytreize@gmail.com",
         pass: "awpa tyjs doxs qiok",
     },
-});
+});*/
 
 //send();
 

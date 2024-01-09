@@ -12,6 +12,7 @@ async function accessCLAVECORREO() {
 module.exports.obtenerOptions = async function (callback) {
     let options = { user: "", pass: "" };
     let user = await accessCLAVECORREO();
+    options.user = user;
     options.pass = pass;
     callback(options);
 };
