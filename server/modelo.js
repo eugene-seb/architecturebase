@@ -180,6 +180,52 @@ function Sistema(test) {
         return res;
     };
 
+    /********************************** */
+    function obtenerIndicesPartidaDisponible(partidas) {
+        const indicesPartidasDisponibles = [];
+
+        partidas.forEach((partida, index) => {
+            if (partida.jugadores.length < partida.maxJug) {
+                indicesPartidasDisponibles.push(index);
+            }
+        });
+
+        return indicesPartidasDisponibles;
+    }
+    function obtenerCodigo() {
+        return Date.now().toString();
+    }
+
+    this.crearPartida = function (email) {
+        let codigo = -1
+        if (email in this.usuarios) {
+            codigo = obtenerCodigo();
+            let partida = new Partida(codigo);
+            partida.agregarJugador(this.usuarios[email]);
+            this.partidas.push(partida);
+        }
+        return codigo;
+    };
+
+    this.unirAPartida = function (email) {
+        if (email in this.usuarios) {
+            const indicesPartidaDisponible = obtenerIndicesPartidaDisponible(
+                this.partidas
+            );
+
+            if (indicesPartidaDisponible.length > 0) {
+                // Add the jugador to the first available partida
+                this.partidas[indicesPartidaDisponible[0]].agregarJugador(
+                    this.usuarios[email]
+                );
+            } else {
+                console.log(
+                    "No hay partidas disponibles para agregar al jugador."
+                );
+            }
+        }
+    };
+
     //------------------Book management--------------------------------------------------------
 
     this.createNewBook = function (obj, callback) {
@@ -321,4 +367,24 @@ function Loan(userId, bookId, title, loanDate, returnDate) {
     this.title = title,
     this.loanDate = loanDate;
     this.returnDate = returnDate;
+}
+
+/*************************/
+function Partida(codigo) {
+    this.codigo = codigo;
+    this.jugadores = [];
+    this.maxJug = 2;
+
+    this.agregarJugador = function (jugador) {
+        if (this.jugadores.length < this.maxJug) {
+            this.jugadores.push(jugador);
+            console.log(
+                `Jugador ${jugador} agregado a la partida ${this.codigo}`
+            );
+        } else {
+            console.log(
+                `No se puede agregar más jugadores a la partida ${this.codigo}.`
+            );
+        }
+    };
 }
