@@ -214,11 +214,15 @@ function ControlWeb() {
                 e.preventDefault();
 
                 let returnDate = $("#returnDate").val();
+                // Convert dateFromPicker to a Date object
+                const selectedDate = new Date(returnDate);
+                // Get the current date
+                const currentDate = new Date();
 
                 if (book.nbrClone < 2) {
                     let msg = "Impossible to loan the remainding book.";
                     cw.mostrarMsg(msg);
-                } else if (returnDate) {
+                } else if (selectedDate > currentDate) {
                     let userId = $.cookie("email");
                     rest.createNewLoan(userId, book, returnDate);
                 } else {
