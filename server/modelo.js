@@ -197,7 +197,7 @@ function Sistema(test) {
     }
 
     this.crearPartida = function (email) {
-        let codigo = -1
+        let codigo = -1;
         if (email in this.usuarios) {
             codigo = obtenerCodigo();
             let partida = new Partida(codigo);
@@ -261,6 +261,38 @@ function Sistema(test) {
             .catch((error) => console.error(error));
     };
 
+    /** Add a copy of a book */
+    this.addCopyBook = function (obj, callback) {
+        let modelo = this;
+
+        this.cad.buscarBook({ isbn: obj.isbn }, function (book) {
+            if (book) {
+                //el libro existe
+                modelo.cad.addCopyBook(book, obj.nbrCopies, function (res) {
+                    callback(res);
+                });
+            } else {
+                callback({ isbn: -1 });
+            }
+        });
+    };
+
+    /** remove a copy of a book */
+    this.removeCopyBook = function (obj, callback) {
+        let modelo = this;
+
+        this.cad.buscarBook({ isbn: obj.isbn }, function (book) {
+            if (book) {
+                //el libro existe
+                modelo.cad.removeCopyBook(book, obj.nbrCopies, function (res) {
+                    callback(res);
+                });
+            } else {
+                callback({ isbn: -1 });
+            }
+        });
+    };
+
     //------------------Book management--------------------------------------------------------
 
     //------------------Loan management--------------------------------------------------------
@@ -276,6 +308,40 @@ function Sistema(test) {
                 });
             } else {
                 callback({ loanId: -1 });
+            }
+        });
+        this.cad.buscarBook({ isbn: obj.isbn }, function (book) {
+            if (book) {
+                //el libro existe
+                modelo.cad.removeCopyBook(book, "1", function (res) {
+                    //callback(res);
+                });
+            } else {
+                //callback({ isbn: -1 });
+            }
+        });
+    };
+
+    this.returnBook = function (obj, callback) {
+        let modelo = this;
+
+        this.cad
+            .returnBook(obj.loanId)
+            .then((result) => {
+                callback(result);
+            })
+            .catch((error) => console.error(error));
+console.log(1)
+        this.cad.buscarBook({ isbn: obj.isbn }, function (book) {
+            console.log(2)
+            if (book) {console.log(3)
+                //el libro existe
+                modelo.cad.addCopyBook(book, "1", function (res) {
+                    //callback(res);
+                    console.log(4)
+                });
+            } else {
+                //callback({ isbn: -1 });
             }
         });
     };
@@ -302,17 +368,6 @@ function Sistema(test) {
                 // Result is a list a of objects
                 this.loans = result;
                 callback(this.loans);
-            })
-            .catch((error) => console.error(error));
-    };
-
-    this.returnBook = function (obj, callback) {
-        let modelo = this;
-
-        modelo.cad
-            .returnBook(obj.loanId)
-            .then((result) => {
-                callback(result);
             })
             .catch((error) => console.error(error));
     };

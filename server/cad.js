@@ -130,10 +130,6 @@ function CAD() {
     this.buscarBook = function (criterio, callback) {
         buscarBooks(this.books, criterio, callback);
     };
-    this.insertarBook = function (book, callback) {
-        insertarNewBook(this.books, book, callback);
-    };
-
     function buscarBooks(coleccion, criterio, callback) {
         coleccion.find(criterio).toArray(function (error, books) {
             if (books.length == 0) {
@@ -144,6 +140,9 @@ function CAD() {
         });
     }
 
+    this.insertarBook = function (book, callback) {
+        insertarNewBook(this.books, book, callback);
+    };
     function insertarNewBook(coleccion, elemento, callback) {
         coleccion.insertOne(elemento, function (err, result) {
             if (err) {
@@ -153,6 +152,50 @@ function CAD() {
                 callback(elemento);
             }
         });
+    }
+
+    this.addCopyBook = function (book, nbrCopies, callback) {
+        addCopyBooks(this.books, book, nbrCopies, callback);
+    };
+    function addCopyBooks(coleccion, elemento, nbrCopiesNew, callback) {
+        coleccion.updateOne(
+            { _id: elemento._id },
+            { $inc: { nbrClone: parseInt(nbrCopiesNew) } },
+            function (err, result) {
+                if (err) {
+                    console.log("An error occurred while updating the book copies.");
+                } else {
+                    if (result.modifiedCount === 1) {
+                        console.log(`Book copies updated successfully for book with ID ${elemento._id}.`);
+                        callback(result);
+                    } else {
+                        console.log(`Book not found with ID ${elemento._id}.`);
+                    }
+                }
+            }
+        );
+    }
+    
+    this.removeCopyBook = function (book, nbrCopies, callback) {
+        removeCopyBooks(this.books, book, nbrCopies, callback);
+    };
+    function removeCopyBooks(coleccion, elemento, nbrCopiesRemove, callback) {
+        coleccion.updateOne(
+            { _id: elemento._id },
+            { $inc: { nbrClone: parseInt(-nbrCopiesRemove) } },
+            function (err, result) {
+                if (err) {
+                    console.log("An error occurred while updating the book copies.");
+                } else {
+                    if (result.modifiedCount === 1) {
+                        console.log(`Book copies updated successfully for book with ID ${elemento._id}.`);
+                        callback(result);
+                    } else {
+                        console.log(`Book not found with ID ${elemento._id}.`);
+                    }
+                }
+            }
+        );
     }
 
     /**
@@ -176,10 +219,6 @@ function CAD() {
     this.buscarLoan = function (criterio, callback) {
         buscarLoans(this.loans, criterio, callback);
     };
-    this.insertarLoan = function (loan, callback) {
-        insertarNewLoan(this.loans, loan, callback);
-    };
-
     function buscarLoans(coleccion, criterio, callback) {
         coleccion.find(criterio).toArray(function (error, loans) {
             if (loans.length == 0) {
@@ -190,6 +229,9 @@ function CAD() {
         });
     }
 
+    this.insertarLoan = function (loan, callback) {
+        insertarNewLoan(this.loans, loan, callback);
+    };
     function insertarNewLoan(coleccion, elemento, callback) {
         coleccion.insertOne(elemento, function (err, result) {
             if (err) {

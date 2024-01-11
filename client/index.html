@@ -198,6 +198,72 @@
 </div>
 <!-- End of the Modal to create a new book -->
 
+<!-- The Modal to add copy of a book -->
+<div class="modal fade" id="modalAddCopy">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add copy of book</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="bModalAddCopy">
+                <form>
+                    <div class="form-group">
+                        <label for="nbrCopies">Number of copies:</label>
+                        <input type="number" value="1" min="1" max="20"class="form-control" placeholder="Enter the number of copies" id="nbrCopiesAdd">
+                    </div>
+                    <button type="submit" class="btn btn-success" id="btnAddCopy">Save</button>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" id="btnModalCloseAddCopy" class="btn btn-danger"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- End of the Modal to add copy of a book -->
+
+<!-- The Modal to remove copy of a book -->
+<div class="modal fade" id="modalRemoveCopy">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Remove copy of book</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="bModalRemoveCopy">
+                <form>
+                    <div class="form-group">
+                        <label for="nbrCopies">Number of copies:</label>
+                        <input type="number" value="1" min="1" max="20"class="form-control" placeholder="Enter the number of copies" id="nbrCopiesRemove">
+                    </div>
+                    <button type="submit" class="btn btn-success" id="btnRemoveCopy">Save</button>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" id="btnModalCloseRemoveCopy" class="btn btn-danger"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- End of the Modal to remove copy of a book -->
+
 <!-- The Modal to create a new Loan -->
 <div class="modal fade" id="modalNewLoan">
     <div class="modal-dialog modal-dialog-centered">

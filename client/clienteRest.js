@@ -220,23 +220,78 @@ function ClienteRest() {
                     data.type != -1
                 ) {
                     let lineCatalogBooks =
-                        '<tr><th scope="row">' +
-                        0 +
-                        "</th><td>" +
+                        "<tr><td>" +
                         data.isbn +
                         "</td><td>" +
                         data.title +
+                        "</td><td>" +
+                        data.nbrClone +
                         '</td><td><button type="button" id="' +
                         data.isbn +
-                        '" class="btn btn-outline-warning">+&nbsp;Loan</button></td></tr>';
+                        '"class="btn btn-outline-warning">&nbsp;Loan</button>&nbsp;&nbsp;&nbsp;<button type="button" id="' +
+                        data.isbn +
+                        "AddCopy" +
+                        '" class="btn btn-outline-info">+</button>&nbsp;<button type="button" id="' +
+                        data.isbn +
+                        "RemoveCopy" +
+                        '" class="btn btn-outline-danger">-</button></td></tr>';
 
                     $("#bodyCatalogBooks").append(lineCatalogBooks);
                     cw.monstrarModalNewLoan(data);
                     cw.mostrarMsg("A book has been added.");
+
+                    cw.monstrarModalAddCopyBook(book);
+                    cw.monstrarModalRemoveCopyBook(book);
                 } else {
                     cw.mostrarMsg(
                         "Something went wrong. Please try again...\nThe book you are trying to add may already exists."
                     );
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            },
+            contentType: "application/json",
+        });
+    };
+
+    this.addCopyBook = function (isbn, nbrCopies) {
+        $.ajax({
+            type: "POST",
+            url: "/addCopyBook",
+            data: JSON.stringify({
+                isbn: isbn,
+                nbrCopies: nbrCopies,
+            }),
+            success: function (data) {
+                if (data.isbn != -1 && data.nbrCopies != -1) {
+                    cw.mostrarMsg(nbrCopies + " books have been added.");
+                } else {
+                    cw.mostrarMsg("Something went wrong. Please try again...");
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            },
+            contentType: "application/json",
+        });
+    };
+
+    this.removeCopyBook = function (isbn, nbrCopies) {
+        $.ajax({
+            type: "POST",
+            url: "/removeCopyBook",
+            data: JSON.stringify({
+                isbn: isbn,
+                nbrCopies: nbrCopies,
+            }),
+            success: function (data) {
+                if (data.isbn != -1 && data.nbrCopies != -1) {
+                    cw.mostrarMsg(nbrCopies + "books have been removed.");
+                } else {
+                    cw.mostrarMsg("Something went wrong. Please try again...");
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -253,26 +308,32 @@ function ClienteRest() {
             url: "/getAllBooks",
             success: function (data) {
                 if (data.allBooks) {
-                    let index = 1;
                     let lineCatalogBooks = "";
 
                     // Iterate through all elements of the array
                     for (let book of data.allBooks) {
                         lineCatalogBooks =
-                            '<tr><th scope="row">' +
-                            index +
-                            "</th><td>" +
+                            "<tr><td>" +
                             book.isbn +
                             "</td><td>" +
                             book.title +
+                            "</td><td>" +
+                            book.nbrClone +
                             '</td><td><button type="button" id="' +
                             book.isbn +
-                            '" class="btn btn-outline-warning">+&nbsp;Loan</button></td></tr>';
+                            '"class="btn btn-outline-warning">&nbsp;Loan</button>&nbsp;&nbsp;&nbsp;<button type="button" id="' +
+                            book.isbn +
+                            "AddCopy" +
+                            '" class="btn btn-outline-info">+</button>&nbsp;<button type="button" id="' +
+                            book.isbn +
+                            "RemoveCopy" +
+                            '" class="btn btn-outline-danger">-</button></td></tr>';
 
                         $("#bodyCatalogBooks").append(lineCatalogBooks);
-                        index++;
 
                         cw.monstrarModalNewLoan(book);
+                        cw.monstrarModalAddCopyBook(book);
+                        cw.monstrarModalRemoveCopyBook(book);
                     }
                 } else {
                     cw.mostrarMsg("no data.");
@@ -414,12 +475,13 @@ function ClienteRest() {
         });
     };
 
-    this.returnBook = function (loanId) {
+    this.returnBook = function (loanId, isbn) {
         $.ajax({
             type: "POST",
             url: "/returnBook",
             data: JSON.stringify({
                 loanId: loanId,
+                isbn: isbn,
             }),
             success: function (data) {
                 if (data.result) {

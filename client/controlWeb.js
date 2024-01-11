@@ -151,6 +151,48 @@ function ControlWeb() {
         });
     };
 
+    this.monstrarModalAddCopyBook = function (book) {
+        $("#" + book.isbn + "AddCopy").on("click", function () {
+            $("#modalAddCopy").modal();
+
+            // Add copy
+            $("#btnAddCopy").on("click", function (e) {
+                e.preventDefault();
+
+                let nbrCopies = $("#nbrCopiesAdd").val();
+
+                if (nbrCopies > 0) {
+                    rest.addCopyBook(book.isbn, nbrCopies);
+                } else {
+                    let msg = "Number incorrect.";
+                    cw.mostrarMsg(msg);
+                }
+                $("#modalAddCopy").modal("hide");
+            });
+        });
+    };
+
+    this.monstrarModalRemoveCopyBook = function (book) {
+        $("#" + book.isbn + "RemoveCopy").on("click", function () {
+            $("#modalRemoveCopy").modal();
+
+            // Remove copy
+            $("#btnRemoveCopy").on("click", function (e) {
+                e.preventDefault();
+
+                let nbrCopies = $("#nbrCopiesRemove").val();
+
+                if (book.nbrClone > 1 && nbrCopies < book.nbrClone) {
+                    rest.removeCopyBook(book.isbn, nbrCopies);
+                } else {
+                    let msg = "Impossible to remove the remainding book.";
+                    cw.mostrarMsg(msg);
+                }
+                $("#modalRemoveCopy").modal("hide");
+            });
+        });
+    };
+
     this.getAllBooks = function () {
         rest.getAllBooks();
     };
@@ -173,7 +215,10 @@ function ControlWeb() {
 
                 let returnDate = $("#returnDate").val();
 
-                if (returnDate) {
+                if (book.nbrClone < 2) {
+                    let msg = "Impossible to loan the remainding book.";
+                    cw.mostrarMsg(msg);
+                } else if (returnDate) {
                     let userId = $.cookie("email");
                     rest.createNewLoan(userId, book, returnDate);
                 } else {
@@ -188,7 +233,7 @@ function ControlWeb() {
 
     this.returnBook = function (loan) {
         $("#" + loan.loanId).on("click", function () {
-            rest.returnBook(loan.loanId);
+            rest.returnBook(loan.loanId, loan.isbn);
         });
     };
 
