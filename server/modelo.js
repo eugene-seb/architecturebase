@@ -331,14 +331,12 @@ function Sistema(test) {
                 callback(result);
             })
             .catch((error) => console.error(error));
-console.log(1)
+
         this.cad.buscarBook({ isbn: obj.isbn }, function (book) {
-            console.log(2)
-            if (book) {console.log(3)
+            if (book) {
                 //el libro existe
                 modelo.cad.addCopyBook(book, "1", function (res) {
                     //callback(res);
-                    console.log(4)
                 });
             } else {
                 //callback({ isbn: -1 });
@@ -419,8 +417,7 @@ function Loan(userId, bookId, title, loanDate, returnDate) {
     this.loanId = userId + bookId;
     this.userId = userId;
     this.bookId = bookId;
-    this.title = title,
-    this.loanDate = loanDate;
+    (this.title = title), (this.loanDate = loanDate);
     this.returnDate = returnDate;
 }
 
