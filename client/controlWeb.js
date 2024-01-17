@@ -226,7 +226,6 @@ function ControlWeb() {
                     let userId = $.cookie("email");
                     rest.createNewLoan(userId, book, returnDate);
                 } else {
-                    cw.getAllLoans();
                     let msg = "Please choose a good date.";
                     cw.mostrarMsg(msg);
                 }
