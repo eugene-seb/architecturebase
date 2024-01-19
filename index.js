@@ -200,6 +200,7 @@ app.post(
                 title: res.title,
                 author: res.author,
                 type: res.type,
+                nbrClone: res.nbrClone,
             });
         });
     }
@@ -217,7 +218,8 @@ app.get(
 app.post(
     "/addCopyBook",
     /*haIniciado,*/ function (request, response) {
-        sistema.addCopyBook(request.body, function (res) { console.log(res+"--------")
+        sistema.addCopyBook(request.body, function (res) {
+            console.log(res + "--------");
             response.send({
                 isbn: res.isbn,
                 nbrCopies: res.nbrCopies,

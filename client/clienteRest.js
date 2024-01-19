@@ -217,7 +217,8 @@ function ClienteRest() {
                     data.isbn != -1 &&
                     data.title != -1 &&
                     data.author != -1 &&
-                    data.type != -1
+                    data.type != -1 &&
+                    data.nbrClone
                 ) {
                     let lineCatalogBooks =
                         "<tr><td>" +
@@ -240,8 +241,11 @@ function ClienteRest() {
                     cw.monstrarModalNewLoan(data);
                     cw.mostrarMsg("A book has been added.");
 
-                    cw.monstrarModalAddCopyBook(book);
-                    cw.monstrarModalRemoveCopyBook(book);
+                    cw.monstrarModalAddCopyBook(data);
+                    cw.monstrarModalRemoveCopyBook(data);
+
+                    ws.newBookCreated(data);
+
                 } else {
                     cw.mostrarMsg(
                         "Something went wrong. Please try again...\nThe book you are trying to add may already exists."
