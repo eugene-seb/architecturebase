@@ -5,6 +5,7 @@ function CAD() {
     this.usuarios = {};
     this.books = {};
     this.loans = {};
+    this.logs = {};
 
     this.conectar = async function (callback) {
         let cad = this;
@@ -16,30 +17,70 @@ function CAD() {
         cad.usuarios = database.collection("usuarios");
         cad.books = database.collection("books");
         cad.loans = database.collection("loans");
+        cad.logs = database.collection("logs");
         callback(database);
     };
 
-    this.buscarOCrearUsuario = function (usr, callback) {
-        //buscarOCrear(this.usuarios,{email:email},callback);
-        buscarOCrear(this.usuarios, usr, callback);
+    this.insertarLog = function (log, callback) {
+        insertLog(this.logs, log, callback);
+    };
+    function insertLog(coleccion, elemento, callback) {
+        coleccion.insertOne(elemento, function (err, result) {
+            if (err) {
+                console.log("An error occur while creating the log.");
+            } else {
+                console.log("New log added");
+                callback(elemento);
+            }
+        });
+    }
+
+    /**
+     * Return a list of objects log
+     *
+     * @returns
+     */
+    this.getAllLogs = async function () {
+        // Find all documents in the collection
+        const cursor = this.logs.find();
+
+        // Convert the cursor to an array of documents
+        const documents = await cursor.toArray();
+
+        return documents;
     };
 
     this.buscarUsuario = function (criterio, callback) {
         buscar(this.usuarios, criterio, callback);
     };
+    function buscar(coleccion, criterio, callback) {
+        let col = coleccion;
+        coleccion.find(criterio).toArray(function (error, usuarios) {
+            if (usuarios.length == 0) {
+                callback(undefined);
+            } else {
+                callback(usuarios[0]);
+            }
+        });
+    }
 
     this.insertarUsuario = function (usuario, callback) {
         insertar(this.usuarios, usuario, callback);
     };
-
-    this.actualizarUsuario = function (obj, callback) {
-        actualizar(this.usuarios, obj, callback);
-    };
+    function insertar(coleccion, elemento, callback) {
+        coleccion.insertOne(elemento, function (err, result) {
+            if (err) {
+                console.log("error");
+            } else {
+                console.log("Nuevo elemento creado");
+                callback(elemento);
+            }
+        });
+    }
 
     this.eliminarUsuario = function (criterio, callback) {
         eliminar(this.usuarios, criterio, callback);
     };
-
     function eliminar(coleccion, criterio, callback) {
         coleccion.deleteOne(criterio, function (err, result) {
             if (err) throw err;
@@ -47,6 +88,9 @@ function CAD() {
         });
     }
 
+    this.buscarOCrearUsuario = function (usr, callback) {
+        buscarOCrear(this.usuarios, usr, callback);
+    };
     function buscarOCrear(coleccion, criterio, callback) {
         coleccion.findOneAndUpdate(
             criterio,
@@ -81,28 +125,9 @@ function CAD() {
         );
     }
 
-    function buscar(coleccion, criterio, callback) {
-        let col = coleccion;
-        coleccion.find(criterio).toArray(function (error, usuarios) {
-            if (usuarios.length == 0) {
-                callback(undefined);
-            } else {
-                callback(usuarios[0]);
-            }
-        });
-    }
-
-    function insertar(coleccion, elemento, callback) {
-        coleccion.insertOne(elemento, function (err, result) {
-            if (err) {
-                console.log("error");
-            } else {
-                console.log("Nuevo elemento creado");
-                callback(elemento);
-            }
-        });
-    }
-
+    this.actualizarUsuario = function (obj, callback) {
+        actualizar(this.usuarios, obj, callback);
+    };
     function actualizar(coleccion, obj, callback) {
         coleccion.findOneAndUpdate(
             { _id: ObjectId(obj._id) },
@@ -163,10 +188,14 @@ function CAD() {
             { $inc: { nbrClone: parseInt(nbrCopiesNew) } },
             function (err, result) {
                 if (err) {
-                    console.log("An error occurred while updating the book copies.");
+                    console.log(
+                        "An error occurred while updating the book copies."
+                    );
                 } else {
                     if (result.modifiedCount === 1) {
-                        console.log(`Book copies updated successfully for book with ID ${elemento._id}.`);
+                        console.log(
+                            `Book copies updated successfully for book with ID ${elemento._id}.`
+                        );
                         callback(result);
                     } else {
                         console.log(`Book not found with ID ${elemento._id}.`);
@@ -175,7 +204,7 @@ function CAD() {
             }
         );
     }
-    
+
     this.removeCopyBook = function (book, nbrCopies, callback) {
         removeCopyBooks(this.books, book, nbrCopies, callback);
     };
@@ -185,10 +214,14 @@ function CAD() {
             { $inc: { nbrClone: parseInt(-nbrCopiesRemove) } },
             function (err, result) {
                 if (err) {
-                    console.log("An error occurred while updating the book copies.");
+                    console.log(
+                        "An error occurred while updating the book copies."
+                    );
                 } else {
                     if (result.modifiedCount === 1) {
-                        console.log(`Book copies updated successfully for book with ID ${elemento._id}.`);
+                        console.log(
+                            `Book copies updated successfully for book with ID ${elemento._id}.`
+                        );
                         callback(result);
                     } else {
                         console.log(`Book not found with ID ${elemento._id}.`);

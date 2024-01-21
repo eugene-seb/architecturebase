@@ -3,6 +3,7 @@ const correo = require("./email.js");
 const datos = require("./cad.js");
 
 function Sistema(test) {
+    this.logs = {};
     this.usuarios = {};
     this.books = {};
     this.loans = {};
@@ -48,6 +49,12 @@ function Sistema(test) {
                 bcrypt.hash(obj.password, 10, function (err, hash) {
                     obj.password = hash;
                     modelo.cad.insertarUsuario(obj, function (res) {
+                        let log = new Log(
+                            "registrarUsuario",
+                            obj.email,
+                            obj.email + " has registered"
+                        );
+                        modelo.insertarLog(log);
                         callback(res);
                     });
                     if (!modelo.test)
@@ -64,6 +71,7 @@ function Sistema(test) {
     };
 
     this.loginUsuario = function (obj, callback) {
+        let modelo = this;
         this.cad.buscarUsuario(
             { email: obj.email, confirmada: true },
             function (usr) {
@@ -73,6 +81,12 @@ function Sistema(test) {
                         usr.password, // hashed password
                         function (err, result) {
                             if (result) {
+                                let log = new Log(
+                                    "loginUsuario",
+                                    obj.email,
+                                    obj.email + " logged in"
+                                );
+                                modelo.insertarLog(log);
                                 callback(usr);
                             } else {
                                 callback({ email: -1 });
@@ -239,7 +253,12 @@ function Sistema(test) {
                 obj.nbrClone = 1;
                 obj.available = true;
                 modelo.cad.insertarBook(obj, function (res) {
-                    //modelo.getAllBooks(callback);
+                    let log = new Log(
+                        "createNewBook",
+                        "same user",
+                        "the book " + obj.isbn + " has been created"
+                    );
+                    modelo.insertarLog(log);
                     callback(res);
                 });
             } else {
@@ -269,6 +288,12 @@ function Sistema(test) {
             if (book) {
                 //el libro existe
                 modelo.cad.addCopyBook(book, obj.nbrCopies, function (res) {
+                    let log = new Log(
+                        "addCopyBook",
+                        "same user",
+                        "A copy of the book " + obj.isbn + " has been added"
+                    );
+                    modelo.insertarLog(log);
                     callback(res);
                 });
             } else {
@@ -285,6 +310,12 @@ function Sistema(test) {
             if (book) {
                 //el libro existe
                 modelo.cad.removeCopyBook(book, obj.nbrCopies, function (res) {
+                    let log = new Log(
+                        "removeCopyBook",
+                        "same user",
+                        "A copy of the book " + obj.isbn + " has been removed"
+                    );
+                    modelo.insertarLog(log);
                     callback(res);
                 });
             } else {
@@ -303,7 +334,12 @@ function Sistema(test) {
             if (!loan) {
                 //el libro no existe, luego lo puedo registrar
                 modelo.cad.insertarLoan(obj, function (res) {
-                    //modelo.getAllBooks(callback);
+                    let log = new Log(
+                        "createNewLoan",
+                        obj.userId,
+                        "the book " + obj.isbn + " has been loaned"
+                    );
+                    modelo.insertarLog(log);
                     callback(res);
                 });
             } else {
@@ -328,6 +364,13 @@ function Sistema(test) {
         this.cad
             .returnBook(obj.loanId)
             .then((result) => {
+                let log = new Log(
+                    "returnBook",
+                    "same user",
+                    "the book " + obj.isbn + " has been returned"
+                );
+                modelo.insertarLog(log);
+
                 callback(result);
             })
             .catch((error) => console.error(error));
@@ -371,6 +414,39 @@ function Sistema(test) {
     };
 
     //------------------Loan management--------------------------------------------------------
+
+    //------------------Logs management--------------------------------------------------------
+    this.insertarLog = function (log) {
+        let modelo = this;
+        let l = {
+            "operation_type": log.operation_type,
+            "userId": log.userId,
+            "date_time": log.date_time,
+            "description": log.description,
+        };
+        modelo.cad.insertarLog(l, function (log) {
+            if (log) {
+                // a log has been registered
+                console.log(log + " log added");
+            } else {
+                console.log(log + " log not added");
+            }
+        });
+    };
+
+    this.getAllLogs = function (callback) {
+        let modelo = this;
+
+        modelo.cad
+            .getAllLogs()
+            .then((result) => {
+                // Result is a list a of objects
+                this.logs = result;
+                callback(this.logs);
+            })
+            .catch((error) => console.error(error));
+    };
+    //------------------Logs management--------------------------------------------------------
 }
 module.exports.Sistema = Sistema;
 
@@ -421,22 +497,10 @@ function Loan(userId, bookId, title, loanDate, returnDate) {
     this.returnDate = returnDate;
 }
 
-/*************************/
-function Partida(codigo) {
-    this.codigo = codigo;
-    this.jugadores = [];
-    this.maxJug = 2;
-
-    this.agregarJugador = function (jugador) {
-        if (this.jugadores.length < this.maxJug) {
-            this.jugadores.push(jugador);
-            console.log(
-                `Jugador ${jugador} agregado a la partida ${this.codigo}`
-            );
-        } else {
-            console.log(
-                `No se puede agregar más jugadores a la partida ${this.codigo}.`
-            );
-        }
-    };
+/*----------------Logs----------------------*/
+function Log(operation_type, userId, description) {
+    this.operation_type = operation_type;
+    this.userId = userId;
+    this.date_time = new Date();
+    this.description = description;
 }
