@@ -166,7 +166,7 @@ function ClienteRest() {
                     ws.email = data.email;
                     cw.limpiar();
                     cw.mostrarMsg("Bienvenido al sistema, " + data.email);
-                    cw.mostrarLoanOfUser();
+                    cw.mostrarLoanOfUser(data.email);
                     cw.mostrarCatalog();
                 } else {
                     console.log("Usuario o clave incorrectos");
