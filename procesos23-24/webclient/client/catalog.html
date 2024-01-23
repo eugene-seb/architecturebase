@@ -1,0 +1,28 @@
+<div id="tbCatalog" style="height: 500px; overflow: auto;">
+    <h5>All books</h5>
+    <div><button type="button" id="btnCreateBook" class="btn btn-outline-success">+ new Book</button></div>
+    <br>
+    <div>
+        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+    </div>
+    <br>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">ISBN</th>
+                <th scope="col">Title</th>
+                <th scope="col">Copies</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="bodyCatalogBooks"></tbody>
+    </table>
+</div>
+<script>
+    $("#myInput").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#bodyCatalogBooks tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+</script>

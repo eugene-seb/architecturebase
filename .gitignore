@@ -1,2 +1,10 @@
 node_modules
 .vscode
+playwright/.github
+playwright/.gitignore
+playwright/playwright-report
+playwright/test-results
+playwright/tests-examples
+playwright/package-lock.json
+playwright/package.json
+playwright/playwright.config.js
