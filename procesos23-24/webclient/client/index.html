@@ -70,7 +70,9 @@
                     <a class="nav-link" href="#" onclick="cw.salir();">Salir</a>
                 </li>
             </ul>
-            <i id="userName"></i>
+            <div><i id="userName"></i></div> &nbsp;&nbsp;&nbsp;
+            <div><button type="button" id="btnAllLogs" class="btn btn-outline-light"
+                    onclick="cw.mostrarAllLogs();">Logs</button></div>
         </div>
     </nav>
 
@@ -108,7 +110,9 @@
         }
 
         $(function () {
+            
             $("#userName").text($.cookie("email"));
+
             $("#returnDatepicker").datepicker({
                 autoclose: true,
                 todayHighlight: true,
@@ -315,3 +319,55 @@
     </div>
 </div>
 <!-- End of the Modal to create a new Loan -->
+
+<!-- Modal to get all the logs -->
+<div class="modal fade" id="modalAllLogs">
+    <div class="modal-xl modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">All Logs</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" id="bModalAllLogs">
+                <div id="tbAllLogs" style="height: 500px; overflow: auto;">
+                    <div>
+                        <input class="form-control" id="myInputLogs" type="text" placeholder="Search..">
+                    </div>
+                    <br>
+
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Operation</th>
+                                <th scope="col">UserID</th>
+                                <th scope="col">Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bodyAllLogs"></tbody>
+                    </table>
+                </div>
+                <script>
+                    $("#myInputLogs").on("keyup", function () {
+                        var value = $(this).val().toLowerCase();
+                        $("#bodyAllLogs tr").filter(function () {
+                            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                        });
+                    });
+                </script>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" id="btnModalCloseAllLogs" class="btn btn-danger"
+                    data-dismiss="modal">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- End of the Modal to get all the logs -->

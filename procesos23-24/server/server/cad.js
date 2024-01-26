@@ -40,8 +40,8 @@ function CAD() {
      * @returns
      */
     this.getAllLogs = async function () {
-        // Find all documents in the collection
-        const cursor = this.logs.find();
+        // Find all documents in the collection, sorted by the date_time field in descending order
+        const cursor = this.logs.find().sort({ date_time: -1 });
 
         // Convert the cursor to an array of documents
         const documents = await cursor.toArray();

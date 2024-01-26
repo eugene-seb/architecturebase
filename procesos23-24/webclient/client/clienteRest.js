@@ -481,6 +481,44 @@ function ClienteRest() {
     };
 
     //------------------Loan management--------------------------------------------------------
+
+    //------------------Logs management--------------------------------------------------------
+
+    this.getAllLogs = function () {
+        $.ajax({
+            type: "GET",
+            url: this.url + "/getAllLogs",
+            success: function (data) {
+                if (data.allLogs) {
+                    let lineLog = "";
+
+                    for (let log of data.allLogs) {
+                        lineLog =
+                            "<tr><td>" +
+                            log.date_time +
+                            "</td><td>" +
+                            log.operation_type +
+                            "</td><td>" +
+                            log.userId +
+                            '</td><td>' +
+                            log.description +
+                            '</td></tr>';
+
+                        $("#bodyAllLogs").append(lineLog);
+                    }
+                } else {
+                    cw.mostrarMsg("no Logs.");
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("Status: " + textStatus);
+                console.log("Error: " + errorThrown);
+            },
+            contentType: "application/json",
+        });
+    };
+    //------------------Logs management--------------------------------------------------------
+
 }
 
 function onSignIn(response) {

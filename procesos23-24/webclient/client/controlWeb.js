@@ -99,7 +99,7 @@ function ControlWeb() {
         $("#mAU").remove();
         $("#fmRegistro").remove();
         $("#fmLogin").remove();
-        if($.cookie("email")) cw.eliminarBtnGoogle();
+        if ($.cookie("email")) cw.eliminarBtnGoogle();
         $("#userName").text($.cookie("email"));
     };
 
@@ -269,4 +269,18 @@ function ControlWeb() {
         rest.getLoansByUser(userId);
     };
     //------------------Loan management--------------------------------------------------------
+
+    //------------------Logs management--------------------------------------------------------
+
+    this.getAllLogs = function () {
+        rest.getAllLogs();
+    };
+
+    this.mostrarAllLogs = function () {
+        
+        $("#bodyAllLogs").empty(); // Get the tbody element by its id and empty its content
+        cw.getAllLogs();
+        $("#modalAllLogs").modal();
+    };
+    //------------------Logs management--------------------------------------------------------
 }

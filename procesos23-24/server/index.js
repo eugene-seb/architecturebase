@@ -20,8 +20,7 @@ test = eval(args[0]); //test=true
 let sistema = new modelo.Sistema(test);
 
 let ws = new moduloWS.WSServer();
-let io = new Server(httpServer,{cors:{ origins: '*:*'}});
-
+let io = new Server(httpServer, { cors: { origins: "*:*" } });
 
 httpServer.listen(PORT, () => {
     console.log(`App está escuchando en el puerto ${PORT}`);
@@ -336,4 +335,16 @@ app.post(
     }
 );
 
+//------------------Loan management--------------------------------------------------------
+
+//------------------Loan management--------------------------------------------------------
+
+app.get(
+    "/getAllLogs",
+    /*haIniciado,*/ function (request, response) {
+        sistema.getAllLogs(function (res) {
+            response.send({ allLogs: res });
+        });
+    }
+);
 //------------------Loan management--------------------------------------------------------
