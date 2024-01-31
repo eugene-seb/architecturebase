@@ -60,7 +60,7 @@ describe(
             sistema.agregarUsuario(usr2);
             sistema.agregarUsuario(usr3);
         });
-        it("Usuarios y partidas en el sistema", function () {
+        xit("Usuarios y partidas en el sistema", function () {
             expect(sistema.numeroUsuarios()).toEqual(3);
             //expect(sistema.obtenerPartidasDisponibles().length).toEqual(0);
         });

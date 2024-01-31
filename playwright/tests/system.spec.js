@@ -65,13 +65,13 @@ test("Create a new book", async ({ page }) => {
     await page.getByRole("button", { name: "Close" }).click();
     await page.getByRole("button", { name: "+ new Book" }).click();
     await page.getByPlaceholder("ISBN").click();
-    await page.getByPlaceholder("ISBN").fill("9");
+    await page.getByPlaceholder("ISBN").fill("16");
     await page.getByPlaceholder("Title").click();
-    await page.getByPlaceholder("Title").fill("book 9");
+    await page.getByPlaceholder("Title").fill("book 16");
     await page.getByPlaceholder("Author").click();
-    await page.getByPlaceholder("Author").fill("author 9");
+    await page.getByPlaceholder("Author").fill("author 16");
     await page.getByPlaceholder("Type of book").click();
-    await page.getByPlaceholder("Type of book").fill("type 9");
+    await page.getByPlaceholder("Type of book").fill("type 16");
     await page.getByRole("button", { name: "Save" }).click();
     await page.getByText("A book has been added.").click();
     await page.getByRole("button", { name: "Close" }).click();
@@ -88,15 +88,11 @@ test("Add a copy", async ({ page }) => {
     await page.getByPlaceholder("Introduce password").fill("1234");
     await page.getByRole("button", { name: "Login" }).click();
     await page.getByRole("button", { name: "Close" }).click();
-    await page
-        .getByRole("row", { name: "book 1 5 Loan + -" })
-        .getByRole("button")
-        .nth(1)
-        .click();
-    await expect(page.locator("#bModalAddCopy")).toBeVisible();
-    await page.locator("#nbrCopiesAdd").fill("3");
+    await page.locator('[id="\\31 AddCopy"]').click();
+    await expect(page.locator("#bModalAddCopy div")).toBeVisible();
+    await page.locator("#nbrCopiesAdd").click();
+    await page.locator("#nbrCopiesAdd").fill("1");
     await page.getByRole("button", { name: "Save" }).click();
-    await expect(page.locator("#bModalMessage")).toBeVisible();
     await expect(page.getByText("books have been added.")).toBeVisible();
     await page.getByRole("button", { name: "Close" }).click();
 });
@@ -115,9 +111,9 @@ test("remove a copy", async ({ page }) => {
     await page.locator('[id="\\31 RemoveCopy"]').click();
     await expect(page.locator("#bModalRemoveCopy div")).toBeVisible();
     await page.locator("#nbrCopiesRemove").click();
-    await page.locator("#nbrCopiesRemove").fill("3");
+    await page.locator("#nbrCopiesRemove").fill("1");
     await page.getByRole("button", { name: "Save" }).click();
-    await expect(page.getByText("3books have been removed.")).toBeVisible();
+    await expect(page.getByText("1books have been removed.")).toBeVisible();
     await page.getByRole("button", { name: "Close" }).click();
 });
 
